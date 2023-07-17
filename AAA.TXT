@@ -1,0 +1,34 @@
+
+Structure for database: D:\EKONTLAD\DATA\ANDY\DENIK.DBF
+Number of data records:     493
+Date of last update   : 03.01.05
+Code Page             : 852
+Field  Field Name  Type       Width    Dec    Index  Collate
+    1  STR         Numeric        3                  
+    2  TYP         Numeric        3            Asc   Machine
+    3  CIS         Numeric        5                  
+    4  DAT         Date           8            Asc   Machine
+    5  DATNAKL     Date           8                  
+    6  MD          Numeric        3            Asc   Machine
+    7  MDA         Numeric        4                  
+    8  DAL         Numeric        3            Asc   Machine
+    9  DAA         Numeric        4                  
+   10  TXT         Character     40                  
+   11  RTYP        Numeric        3                  
+   12  RCIS        Numeric        5                  
+   13  CAS         Numeric       12      2     Asc   Machine
+   14  DPH         Numeric        4            Asc   Machine
+   15  ZAD         Numeric       12      2           
+   16  CASCM       Numeric       12      2           
+   17  MENA        Character      3                  
+   18  KURZ        Numeric       12      4           
+   19  SOU         Numeric        8                  
+   20  DEL         Logical        1                  
+   21  FLG         Logical        1                  
+   22  ADAT        Date           8                  
+   23  ATIME       Character      5                  
+   24  AUSER       Character     10                  
+   25  MDAT        Date           8                  
+   26  MTIME       Character      5                  
+   27  MUSER       Character     10                  
+** Total **                     201

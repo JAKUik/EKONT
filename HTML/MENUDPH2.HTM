@@ -1,0 +1,22 @@
+<html> <head> <style> .datum {font-family: Verdana; font-size: 8pt; font-weight: bold; font-style: italic} .nadpis {font-family: Verdana; font-size: 10pt; font-weight: bold} a {font-family: Verdana; font-size: 8pt; color: black; text-decoration: none} .idx {font-family: Verdana; font-size: 8pt; color: black; text-decoration: none} </style><script src="dataakt.js"></script><script> 
+        var p;
+
+        function kotvaOvl(){
+          with (document){
+            var a=anchors;
+            var k=a.length;
+            for (var i=0; i<k; i++){
+              a[i].onmouseover=new Function("this.style.textDecoration='underline'");
+              a[i].onmouseout=new Function("this.style.textDecoration='none'");
+              a[i].onclick=new Function("if (p!=null) {p.style.color='black'; p.style.fontWeight='normal'}; this.style.color='red'; this.style.fontWeight='bold'; p=this");
+              a[i].target="form";
+            }
+            p=a[0];
+            p.style.fontWeight='bold';
+		p.style.color='red';
+          }
+        }
+    	function zmenaIdx(){
+    	  parent.location="Index.htm"
+    	}  
+    </script> </head> <body onLoad="kotvaOvl()"> <br><span class="nadpis" style="cursor: default">&nbsp;&nbsp;DPH vzor 12</span><br> &nbsp;&nbsp;<span class="datum" style="cursor: default"><script>document.write(Dph12);</script></span> <hr size="2" noshade color="black"> <a id="menu" href="Dph12_1.htm">&nbsp;&nbsp;1.strana (oddíl A)</a><br> <a id="menu" href="Dph12_2.htm">&nbsp;&nbsp;2.strana (oddíl B)</a><br> <a id="menu" href="Dph12_3.htm">&nbsp;&nbsp;3.strana</a><br> <a id="menu" href="Dph12_4.htm">&nbsp;&nbsp;4.strana (oddíl C)</a><br> <hr size="2" noshade color="black"> <a id="menu" href="Helpform.htm">&nbsp;&nbsp;Nápovìda</a><br> <a id="menu" href="Problemy.htm">&nbsp;&nbsp;Øešené problémy</a><br><br> <div class="idx" onClick="zmenaIdx()" onmouseover="this.style.textDecoration='underline'; this.style.cursor='hand'" onmouseout="this.style.textDecoration='none'">&nbsp;&nbsp;Hlavní menu</div><br> </body> </html>

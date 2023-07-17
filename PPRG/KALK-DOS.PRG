@@ -1,0 +1,2 @@
+DO kalkul
+QUIT

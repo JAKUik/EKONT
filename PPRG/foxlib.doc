@@ -1,0 +1,719 @@
+                +---------------------+
+                |  Funkce FOXLIB.PLB  |
+                +---------------------+
+
+BLANK (<expr1>)
+        - Vrac¡ pr zdnou hodnotu stejn‚ho typu a d‚lky jako <expr1>
+          <expr1> m…§e bìt typu C, N, D, nebo L
+
+BEEP (<expN1>, <expN2>)
+        - Zvukovì sign l.
+          <expN1> = frekv. (Hz),
+          <expN2> = doba (ms zaokr. na 55)
+
+BELL ()
+        - Kr tkì zvukovì sign l ( =chr(7) )
+
+OUTKM (<expN1>, <expN2>, <expN3> [, <expN4>, <expN5>, ... <expN20>, <expN21>])
+        - Porovn v  ujet‚ kilometry s £daji o posledn¡ £dr§bØ a maxim ln¡ho
+          poŸtu ujetìch kilometr… mezi £dr§bami.
+          <expN1> = ujet‚ kilometry (stav tachometru)
+          <expN2> = stav tachometru pýi posledn¡ £dr§bØ
+          <expN3> = maxim ln¡ poŸet ujetìch kilometr… od posledn¡ £dr§by
+                    je li zad na 0, porovn n¡ se neprov d¡
+          <expN4>...<expN21> = dalç¡ £daje jako <expN2> a <expN3>
+          Pý¡klad:
+             ? outkm(ujeto, vymena_ol, max_olej, vymena_pn, max_pneu)
+                - Vr t¡ .T. jestli§e poŸet ujetìch km pýekroŸil §ivotnost
+                  oleje, nebo pneumatik.
+
+STRN (<expN1> [, <expN2> [, <expN3> [, <expN4>]]])
+        - Pýevede Ÿ¡slo <expN1> na ýetØzec ve voln‚m form tu a bez mezer.
+          <expN2> = maxim ln¡ d‚lka vìsledn‚ho ýetØzce. (1-100, 0=impl.=20+des.)
+                    (je-li z porn  bude ýetØzec doplnØn z leva mezerama
+                    na po§adovanou d‚lku)
+          <expN3> = maxim ln¡ poŸet desetinnìch m¡st (0-18, impl.=6)
+                    (vìsledek bude zaokrouhlen bØ§nìm zp…sobem)
+          <expN4> = je-li zad na nenulov  hodnota a Ÿ¡slo <expN1> je
+                    rovno nule bude vr cen pr zdnì ýetØzec (nebo vyplnØnì
+                    mezerama)
+
+STRI (<expN1>)
+        - Pýevede Ÿ¡slo <expN1> na INT a pak na ýetØzec bez mezer.
+          (pracuje pouze s Ÿ¡sly v rozsahu +/- 2^31-1)
+
+CS (<expC1> [, <expN1> [, <expC2>]])
+        - Pýevede ýetØzec do tvaru vhodn‚m pro Ÿesk‚ tý¡dØn¡ (k¢d Kamenickìch),
+          pýi pýevodu nahrazuje "CH" za jeden znak a dopln¡ na konec tolik
+          mezer, kolik bylo "CH".
+          <expC1> = pýev dØnì ýetØzec
+          <expN1> = 1 - nedoplåovat mezery pýi nahrazov n¡ "CH"
+                    2 - odýezat vçechny koncov‚ mezery
+          <expC2> = k¢dov n¡ Ÿeçtiny (viz CSCODE())
+                    'L' - LATIN2
+                    'K' - KAMENICKY
+          Pý¡klady:
+                INDEX ON cs(jmeno) TAG jmeno
+                SEEK cs("Charv t",1)
+
+CSUP (<expC1>)
+        - Pýevede ýetØzec <expC1> na velk‚ znaky (k¢d Kamenickìch).
+
+CSUP1 (<expC1>)
+        - Pýevede prvn¡ znak v ýetØzeci <expC1> na velkì znak
+          (k¢d Kamenickìch). Jako prvn¡ znak nejsou pova§ov ny
+          znaky: mezera, tabul tor, CR a LF.
+
+CSLW (<expC1>)
+        - Pýevede ýetØzec <expC1> na mal‚ znaky (k¢d Kamenickìch).
+
+CSPROP (<expC1>)
+        - Pýevede ýetØzec <expC1> podobnØ jako funkce PROPER(),
+          ale respektuje Ÿeçtinu (k¢d Kamenickìch). Za oddØlovaŸe slov
+          jsou pova§ov ny znaky: mezera, tabul tor, CR a LF.
+
+CSPROP1 (<expC1>)
+        - Funguje stejnØ jako funkce CSPROP(), ale pýevede pouze prvn¡
+          znak v ýetØzci na velk‚ p¡smeno a ostatn¡ pýevede na mal .
+          Za prvn¡ znak v ýetØzci nen¡ pova§ov n znak oddØluj¡c¡ slova.
+
+CSCMP_SET ([<expC1>])
+        - Nastav¡ zp…sob porovn v n¡ ýetØzc… pro funkce CSCMP() a CSINL()
+          <expC1> = ýetØzec obsahuj¡c¡:
+                        ! - Nerozliçovat velk /mal  (ACSII)
+                        U - Nerozliçovat velk /mal  (k¢d Kamenickìch)
+                        L - Neporovn vat poŸ teŸn¡ mezery (LTRIM())
+                        R - Neporovn vat koncov‚ mezery (RTRIM())
+                        E - üetØzce mus¡ bìt naprosto shodn‚ (EXACT)
+                            (lze kombinovat s L a R)
+          Nen¡-li <expC1> zad no, vçecny tyto volby se zruç¡ a porovn v n¡
+          bude shodn‚ s porovn n¡m pomoc¡ '=' pýi SET EXACT OFF.
+          Funkce vrac¡ minul‚ nastaven¡ a souŸasnØ provede nastaven¡ nov‚,
+          zad n¡m <expC1> = "?" se § dn‚ nov‚ nastaven¡ neprovede a funkce
+          pouze vr t¡ v ýetØzci aktu ln¡ nastaven¡.
+
+CSCMP (<expC1>, <expC2> [, <expC3>])
+        - Porovn  ýetØzce <expC1> a <expC2> a vrac¡ .T. jsou-li shodn‚.
+          <expC3> ud v  zp…sob porovn n¡ (viz CSCMP_SET()), nen¡-li zad no
+          pou§ije se nastaven¡ proveden‚ funkc¡ CSCMP_SET().
+
+CSINL (<expC1>, <expC2> [, <expC3>, ... <expC21>])
+        - Porovn v  ýetØzec <expC1> je-li shodnì s nØkterìm ýetØzcem
+          ze seznamu <expC2> ... <expC21>. Funkce pracuje podobnØ jako
+          funkce INLIST(), ale vyu§¡v  nastaven¡ funkc¡ CSCMP_SET().
+
+CSCODE ([<expC1>])
+        - Nastav¡ k¢dov n¡ Ÿeçtiny
+          <expC1> = 'L' - LATIN2
+                    'K' - KAMENICKY
+          Vrac¡ dosavadn¡ nastaven¡.
+          Implicitn¡ nastaven¡ je LATIN2.
+
+ALIGNL (<expC1>)
+ALIGNR (<expC1>)
+ALIGNC (<expC1>)
+        - Vrac¡ ýetØzec jeho§ obsah bude zarovn n (L-vlevo, R-vpravo
+          a C-centrovat).
+          Najde-li napý¡klad funkce ALIGNL na zaŸ tku zadan‚ho ýetØzce
+          mezery (nebo znak <TAB>), posune ostatn¡ znaky na zaŸ tek
+          a dopln¡ ýetØzec na konci mezerama na p…vodn¡ d‚lku.
+
+SKLON (<expN1>, <expC1>, <expC2>, <expC3>)
+        - Vyhodnot¡ vìraz <expN1> a podle jeho hodnoty vr t¡ jeden ze tý¡
+          ýetØzc… pro 1, 2-4 a ostatn¡ Ÿ¡slice.
+          Pý¡klad:
+                ? stri(pocet), sklon(pocet, "d¡l", "d¡ly", "d¡l…")
+                ? stri(pocet), sklon(pocet, "Ÿ st", "Ÿ sti", "Ÿ st¡")
+
+EINKEY ([[<expN1>] [, <expC1>]])
+        - Vrac¡ k¢d stisknut‚ kl vesy podobnØ jako funkce INKEY(),
+          s t¡m rozd¡lem, §e vracen‚ k¢dy speci ln¡ch kl ves jsou jin‚.
+          Funkce EINKEY() tak umo§åuje vyu§¡t vçechny kombinace kl ves.
+          <expN1> = Doba Ÿek n¡ v sekund ch (stejn‚ jako u INKEY())
+          <expC1> = ü¡dic¡ ýetØzec (podobnØ jako u INKEY()):
+                    S - Zobrazen¡ kurzoru
+                    H - Nezobrazovat kurzor (implicitnØ)
+                    M - Reagovat i na lev‚ tlaŸ¡tko myçi
+                    T - Funkce bude m¡sto k¢du kl vesy vracet jej¡ n zev
+                    + - K¢dy kl ves s ALT, CTRL a SHIFT budou jeçtØ rozç¡ýeny
+                        k¢d + 16384 = stisknut Alt
+                        k¢d +  8192 = stisknut Ctrl
+                        k¢d +  4096 = stisknut Shift
+                         (lepç¡ je ale pou§¡t EINKEYL(1) )
+
+EINKEYL ([1])
+        - Vrac¡ k¢d kl vesy naposledy vr cen‚ funkc¡ EINKEY()
+          Pokud je zad n parametr, vrac¡ funkce znakovì ýetØzec obsahuj¡c¡
+          informaci o stisku ALT, CTRL nebo SHIFT u kl vesy naposledy
+          vr cen‚ funkc¡ EINKEY(). üetØzec m…§e obsahovat znaky A,C a S.
+
+EINKEYC (<expN1> | <expC1>)
+        - Pýev d¡ k¢d kl vesy na znakovì n zev a naopak.
+          Znakovì n zev m…§e m¡t napý¡klad tyto tvary:
+                {ALT+ENTER}
+                {CTRL+F3}
+                B
+                {^N}
+                ALT/C
+                +{SHIFT+ENTER}
+               atd ...
+          Slo§en‚ z vorky jsou nepovinn‚, nebo lze pou§¡t i [] a <>.
+          Je-li zad n jako prvn¡ znak '+' bude vr cen rozç¡ýenì k¢d,
+          stejnØ jako u funkce EINKEY('+').
+          Lze pou§¡vat ^ m¡sto CTRL, SH m¡sto SHIFT a m¡sto shiftov‚ho
+          oddØlovaŸe + pou§¡t /.
+
+WORKING ([[<expC1>] [, <expN1>]])
+        - Vyp¡çe text "Pracuji..." v informaŸn¡m ok‚nku v lev‚m horn¡m
+          rohu obrazovky a zah j¡ odpoŸ¡t v n¡ Ÿasu.
+          <expC1> = Vypisovanì text (implicitnØ "Pracuji...")
+          <expN1> = Doba Ÿek n¡ v sekund ch (implicitnØ 0=ihned).
+                    Je-li zad na nenulov  hodnota, neobjev¡ se informaŸn¡
+                    okno ihned ale a§ po zadan‚ dobØ a to za pýedpokladu,
+                    §e u§ivatel po t‚to dobØ stiskne libovolnou kl vesu
+                    a FOXPRO si tuto kl vesu pýebere (napý. pýi INKEY()),
+                    nebo Ÿek -li na stisk kl vesy (napý. READ a pod.)
+        Funkce vrac¡ v§dy .T.
+
+ENDWORK ()
+        - Zruç¡ informaŸn¡ okno zobrazen‚ funkc¡ WORKING a ukonŸ¡ odpoŸ¡t v n¡.
+        Funkce vrac¡ v§dy .T.
+
+WORKTIME ()
+        - Vrac¡ dobu v sekund ch od spuçtØn¡ funkce WORKING, pokud byla
+          potom zavol na funkce ENDWORK, vrac¡ funkce WORKTIME dobu mezi
+          funkcemi WORKING a ENDWORK.
+
+SETWTEXT ([<expC1>])    - Nastaven¡ impl. vypisovan‚ho textu
+SETWY ([<expN1>])       - Nastaven¡ souýadnice Y pro inf. okno (-1=centrovat)
+SETWX ([<expN1>])       - Nastaven¡ souýadnice X pro inf. okno (-1=centrovat)
+SETWSCHEME ([<expN1>])  - Nastaven¡ barevn‚ho sch‚matu pro inf. okno (0=impl.)
+SETWTIME ([<expN1>])    - Nastaven¡ impl. doby Ÿek n¡ (i desetiny sek.)
+        Vçecny tyto funkce vracej¡ pýedchoz¡ nastaven¡ a zmØna jimi proveden 
+        nem  vliv na ji§ zobrazen‚ informaŸn¡ okno.
+
+DBSTATUS ([<expN1>])
+        - Vrac¡ stav datab ze, nebo uzamŸen¡ z znamu
+          Vrac¡: 0 - Z znam je pý¡stupnì vçem u§ivatel…m
+                 1 - Z znam je uzamŸen (RLOCK)
+                 2 - Je uzamŸena cel  datab ze (FLOCK)
+                 3 - Datab ze je otevýena s vìluŸnìm pý¡stupem (EXCLUSIVE)
+                 4 - Datab ze je otevýena pouze pro Ÿten¡ (NOUPDATE)
+          Vr cenì stav odpov¡d  pouze vlastn¡m akc¡m (napý. RLOCK)
+          <expN1> = Ÿ¡slo pracovn¡ oblasti (0=aktu ln¡)
+
+PERC ([<expC1> [,<expN2> [,<expC3> [,<expN4> [,<expN5> [,<expN6> [,<expN7>] ])
+        - Zobrazuje okno s prou§kem vyjadýuj¡c¡m procento proveden‚ operace.
+          <expC1> = Intern¡ n zev okna (max. 10 znak…)
+          <expN2> = Hodnota prou§ku v rozsahu 0-1
+          <expC3> = Nadpis v oknØ (max. 50 znak…)
+          <expN4> = Y-ov  souýadnice okna
+          <expN5> = ¬¡slo barevn‚ho sch‚matu pro okno (impl. 5)
+          <expN6> = ¬¡slo barvy ze sch‚matu pro nadpis (impl. 1)
+          <expN7> = ¬¡slo barvy ze sch‚matu pro prou§ek (impl. 1)
+        Pokud zaŸ¡n  n zev okna teŸkou nebude prvn¡ teŸka zahrnuta do
+        n zvu okna.
+        SouŸasnØ m…§e bìt zobrazeno maxim lnØ 20 tØchto oken
+        pro funkce PERC a MSG (n zvy nejsou spoleŸn‚).
+        Zad n¡m funkce bez parametr… se provede zruçen¡ vçech tØchto oken.
+        Zad n¡m pouze <expC1> se provede zruçen¡ tohoto okna.
+        V pr…bØhu operace staŸ¡ ji§ zad vat jen parametry <expC1> a <expN2>
+        (pý¡padnØ <expC3>), ostatn¡ hodnoty se pro dann‚ okno nemØn¡.
+        Nen¡-li zad na Y-ov  souýadnice, nebo je-li zad na hodnota -1,
+        bude okno um¡stØno doprostýed obrazovky, nebo pod nejn¡§e polo§en‚
+        pýedeçl‚ okno funkce PERC (ev. funkce MSG).
+
+_MKDIR (<expC1>)
+        - Vytvoý¡ adres ý na disku, Vrac¡ .T. pokud se adres ý podaýilo
+          vytvoýit, nebo pokud ji§ existoval.
+_RMDIR (<expC1>)
+        - Zruç¡ adres ý na disku, Vrac¡ .T. pokud se adres ý podaýilo
+          zruçit. Pokud adres ý pýedt¡m neexistoval, nebo nejde-li zruçit,
+          vrac¡ funkce .F.. Adres ý nelze zruçit napý¡klad pokud nen¡ pr zdnì.
+_ISDIR (<expC1>)
+        - Zjist¡ zda uvedenì adres ý existuje, pokud ano, vrac¡ .T.
+          Pro koneŸnì adres ý lze pou§¡t i znaky '*' a '?'.
+        Pro funkce _MKDIR(), _RMDIR() a _ISDIR() plat¡, §e adres ý zadanì
+        v <expC1> m…§e, nebo nemus¡ bìt ukonŸen znakem '\'.
+
+_SYSDSK ([<expC1>])
+        - Nastav¡ aktu ln¡ disk pro DOS
+          <expC1> = disk (napý. "C:"), mus¡ bìt uveden znak ':', funkce
+                    vrac¡ .T./.F. zda se povedlo nastavit po§adovanì disk.
+          Nen¡-li zad n disk <expC1>, vrac¡ funkce aktu ln¡ nastaven¡ disku.
+
+_ISNETDSK(<expC1>)
+        - Funkce vrac¡ .T./.F. zda je zadanì disk s¡œovì, nebo ne.
+          <expC1> = disk (napý. "C:"), mus¡ bìt uveden znak ':'
+
+_ISREMDSK(<expC1>)
+        - Funkce vrac¡ .T./.F. zda je zadanì disk vyj¡matelnì (disketa).
+          <expC1> = disk (napý. "C:"), mus¡ bìt uveden znak ':'
+
+_DSKSPACE(<expC1>)
+        - Funkce vrac¡ velikost voln‚ho m¡sta na zadan‚m disku.
+          (funkce DISKSPACE() ve FoxPro: jen aktu ln¡ disk).
+          <expC1> = disk (napý. "C:"), mus¡ bìt uveden znak ':'
+          Pokud je chybnØ zad n disk vrac¡ funkce -1
+
+VMOD ([<expN1> [,1]])
+        - Pýepne videom¢d grafick‚ karty. Nen¡-li zad na hodnota <expN1> vr t¡
+        aktu ln¡ hodnotu videom¢du.
+        - Parametr 1 zak §e refresh pomoc¡ DOSu (asi po p t‚m zavol n¡ havaruje)
+          (pýi obnovØ (napý. 'vmod(vmod())') nen¡ nutno parametr 1 uv dØt)
+
+VFONT ([<expC1>, <expN2> [,<expN3> [,<expN4>]]])
+        - Nahraje znakovou sadu do videokarty.
+          <expC1> = znakov  sada
+          <expN2> = vìçka znak… (byte/znak 8,14,16)
+          <expN3> = k¢d prvn¡ho znaku (impl. 0)
+          <expN4> = blok (0-3 EGA, 0-7 VGA) (impl. 0)
+        Funkce vrac¡ zobrazovanou vìçku znak… (byte/znak)
+        PoŸet nahranìch znak… = d‚lka<expC1> / <expN2>
+
+VFSET (<expN1> [,<expN2>])
+        - Nastav¡ blok znak…, kterì se m  zobrazovat
+          <expN1> = blok pro norm ln¡ znaky (bez jasu)
+          <expN2> = blok pro znaky BOLD (zvìçenì jas) (impl. jako <expN1>)
+
+VFDEFAULT ([<expN1>])
+        - Nahraje implicitn¡ znakovou sadu do videokarty.
+          <expN1> = blok (0-3 EGA, 0-7 VGA) (impl. 0)
+
+GETSCRCHAR (<expN1>, <expN2> [,1])
+        - NaŸte znak, nebo atribut z obrazovky
+          <expN1> = ý dek obrazovky (y)
+          <expN2> = sloupec obrazovky (x)
+          1       = je-li zad n nepovinnì parametr '1', bude vr zen atribut
+        Funkce vrac¡ k¢d znaku (nebo atribut), kterì se nach z¡ na zadan‚
+        pozici na obrazovce.
+
+GETSCRLINE (<expN1> [,<expN2>] [,<expN3>])
+        - NaŸte ýetØzec znak… z obrazovky
+          <expN1> = ý dek obrazovky (y)
+          <expN2> = sloupec obrazovky (x) (impl. 0)
+          <expN3> = poŸet znak… (impl. do konce ý dku)
+        Funkce vrac¡ ýetØzec znak…, kter‚ se nach z¡ na zadan‚ pozici
+        na obrazovce. Znaky jejich§ k¢dy jsou menç¡ ne§ 32 (mezera) budou
+        nahrazeny mezerou.
+
+AND(<expN1>, <expN2>)
+OR(<expN1>, <expN2>)
+XOR(<expN1>, <expN2>)
+        - Provede bitov‚ AND, OR nebo XOR se zadanìmi Ÿ¡sly.
+        ¬¡sla <expN1> a <expN2> mohou bìt pouze cel  Ÿ¡sla
+        v roszahu -2147483648 a§ 2147483647 (long).
+
+PEEK(<expN1>, <expN2>)
+PEEKW(<expN1>, <expN2>)
+PEEKL(<expN1>, <expN2>)
+        - NaŸte byte, slovo nebo dvojslovo (long) z operaŸn¡ pamØti.
+          <expN1> = Adresa - segment
+          <expN2> = Adresa - offset
+
+POKE(<expN1>, <expN2>, <expN3>)
+POKEW(<expN1>, <expN2>, <expN3>)
+POKEL(<expN1>, <expN2>, <expN3>)
+        - Zap¡çe byte, slovo nebo dvojslovo (long) do operaŸn¡ pamØti.
+          <expN1> = Adresa - segment
+          <expN2> = Adresa - offset
+          <expN3> = Zapisovan  hodnota
+
+HEX(<expN1> | <expC1> [,<expN2>])
+        - Pýevede dekadick‚ Ÿ¡slo na hexa a naopak.
+          <expN1> = Dekadick‚ Ÿ¡slo pýev dØn‚ na ýetØzec obsahuj¡c¡ hexa tvar
+          <expC1> = üetØzec obsahuj¡c¡ hexa tvar pýev dØnì na dekadick‚ Ÿ¡slo
+          <expN2> = Pro pýevod d->h ud v  po§adovanì poŸet znak… doplnØnì '0'
+
+BIN(<expN1> | <expC1> [,<expN2>])
+        - Pýevede dekadick‚ Ÿ¡slo na bin rn¡ a naopak.
+          <expN1> = Dekadick‚ Ÿ¡slo pýev dØn‚ na ýetØzec obsahuj¡c¡ bin rn¡ tvar
+          <expC1> = üetØzec obsahuj¡c¡ bin rn¡ tvar pýev dØnì na dekadick‚ Ÿ¡slo
+          <expN2> = Pro pýevod d->b ud v  po§adovanì poŸet znak… doplnØnì '0'
+                    (pokud je <expN2> z porn‚ budou m¡sto znak… '01' pou§ity
+                    znaky '.X')
+                    Pro pýevod b->d nenulov  hodnota <expN2> ud v , §e se
+                    v ýetØzci <expC1> mohou vyskytovat i jin‚ znaky ne§ '01'.
+                    Znaky '0-_.úþ' budou pýevedeny jako 0 ostatn¡ jako 1.
+
+USERERROR (<expC1>)
+        - Vyvol  chybov‚ hl çen¡ FoxPro (Cancel/Suspend/Ignore) s textem
+          zadanìm v <expC1>.
+          Toto chybov‚ hl çen¡ lze bØ§nØ oçetýit pomoc¡ pý¡kazu ON ERROR.
+          Funkce ERROR() vrac¡ hodnotu 1098.
+          Funkce MESSAGE() vrac¡ ve FoxPro 2.5 ýetØzec <expC1>,
+          ve FoxPro 2.0 vrac¡ ýetØzec "API function _UserError() was called."
+
+SBAR (<expN1> [,<expN2> [,<expC1>]])
+        - Vytvoý¡ ýetØzec pro zobrazen¡ procentu ln¡ Ÿ sti
+          <expN1> = ¬¡slo mezi 0 a 1 ud vaj¡c¡ procento
+          <expN2> = D‚lka vìsledn‚ho ýetØzce (impl. 50)
+          <expC1> = Znak pro vyplnØn¡ (impl. chr(220))
+
+SBAR2 (<expN1>, <expN2> [,<expN3> [,<expC1> [,<expC2> [,<expC3>]]]])
+        - Vytvoý¡ ýetØzec pro zobrazen¡ dvou procentu ln¡ch Ÿ st¡
+          <expN1> = ¬¡slo mezi 0 a 1 ud vaj¡c¡ procento 1
+          <expN2> = ¬¡slo mezi 0 a 1 ud vaj¡c¡ procento 2
+          <expN3> = D‚lka vìsledn‚ho ýetØzce (impl. 50)
+          <expC1> = Znak pro vyplnØn¡ 1.prou§ku (impl. chr(220))
+          <expC2> = Znak pro vyplnØn¡ 2.prou§ku (impl. chr(196))
+          <expC3> = Znak pro ukonŸen¡ 2.prou§ku (impl. chr(191))
+                    (bude-li zad no <expC3>="" nebude druhì prou§ek ukonŸen)
+        Vìsledkem je napý. "________---------+"
+
+NETCONN()
+        - Vrac¡ Ÿ¡slo "CONNECTION NUMBER" v s¡ti. Pokud nebyla stanice
+        jeçte do s¡tØ pýihl çena (nikdy od zapnut¡) vrac¡ 0.
+
+NETADR([<expN1>])
+        - Vrac¡ Ÿ¡slo s¡tØ "NETWORK ADDRESS" (8 znak…)
+          <expN1> = CONNECTION NUMBER (pro jin‚ho u§ivatele)
+
+NETNODE([<expN1>])
+        - Vrac¡ Ÿ¡slo stanice v s¡ti "NODE ADDRESS" (12 znak…)
+          <expN1> = CONNECTION NUMBER (pro jin‚ho u§ivatele)
+
+NETUSER([<expN1>])
+        - Vrac¡ jm‚no u§ivatele v s¡ti "USERNAME", nen¡-li stanice
+        pýihl çena vrac¡ pr zdnì ýetØzec
+          <expN1> = CONNECTION NUMBER (pro jin‚ho u§ivatele)
+                    nen¡-li toto Ÿ¡slo obsazeno vrac¡ pr zdnì ýetØzec.
+
+NETOBJLIST(<expN1>)
+        - Vrac¡ seznam jmen objekt… v bindery
+          <expN1> = Typ objekt…
+        Pý¡klady pou§itelnìch typ… objedk…:
+          1 = USER
+          2 = GROUP
+          3 = QUEUE
+          4 = SERVER
+          7 = PSERVER
+        Pokud je zad n typ -1 vrac¡ seznam vçech objekt… (m lo vyu§iteln‚,
+        proto§e nelze rozliçit co je kterì objekt zaŸ.)
+        Pý¡klad: NETOBJLIST(3) vr t¡ seznam tiskovìch front
+        (napý. "Q1,QLASER,QLASER2")
+
+NETREMOTE (<expN1>)
+        - Vrac¡ s¡œov‚ pýesmØrov n¡ zaý¡zen¡.
+          <expN1> = ¬¡slo v s¡œov‚ tabulce (0-65535)
+        POZOR, pokud je instalov n VLM.EXE v NOVELL NETWARE 4.01
+        jsou tisk rny pýesunuty a§ nØkde od 32768 ale nejprve se mus¡
+        zavolat NETREMOTE (0) aby se vynuloval nejakì jeho prapodivnì Ÿ¡taŸ.
+
+LPTREMOTE ([<expN1> [,1|2]])
+        - Vrac¡ .T./.F. zda je zadan‚ LPTn pýesmØrov no na s¡œov‚ zaý¡zen¡.
+          <expN1> = ¬¡slo mezi 1 a 3 ud vaj¡c¡ LPT1 - LPT3
+        Nen¡-li zad n parametr <expN1> provede funkce aktualizaci sv‚ vnitýn¡
+        tabulky (je nutno prov‚st pokud dojde ke zmØnØ pýesmØrov n¡
+        napý. RUN CAPTURE a pod.)
+        Druhì nepovinnì parametr znamen  §e funkce vr t¡ jm‚no serveru a fronty
+        (napý. "\\SERVER\Q1"), pokud je zadan  hodnota 2 bude vr ceno pouze
+        jm‚no fronty ("Q1").
+
+LPTNETFLG ([<expC1>])
+        NaŸte nebo zap¡çe pý¡znaky (vlajky) pro zachycen¡ LPT1
+        Bez parametru vrac¡ ýetØzec pý¡znak… (63 byte)
+        Pokud je zad n ýetØzec <expC1> (1-42 byte) bude zaps n do
+        pý¡znak… (je-li kratç¡, ostatn¡ pý¡znaky nebudou zmØnØny)
+        a vrac¡ k¢d chyby (0=OK)
+
+LPTNETCAPT (<expC1>)
+        Provede zachycen¡ LPT1 do fronty <expC1>
+        Vrac¡ k¢d chyby (0=OK, 252=Nezn m  fronta, ...)
+
+LPTNETFLSH ([<expN1>])
+        Vypr zdn¡ zachycen¡ LPTx (FLUSH)
+          <expN1> - Ÿ¡slo tisk rny (1-3) (impl. 1)
+
+GOREC (<expN1> [,<expN2> [,<expN3>]])
+        Prov d¡ skok na zadanì z znam datab ze (GO rec.).
+          <expN1> - Ÿ¡slo z znamu
+          <expN2> - Ÿ¡slo pracovn¡ oblasti (0=aktu ln¡ (impl.))
+          <expN3> - akce pýi chybn‚m Ÿ¡sle z znamu:
+                       -1 - GO EOF (impl.) (GO BOTTOM, SKIP)
+                        0 - nic
+                        1 - GO TOP
+                        2 - GO BOTTOM
+        Vrac¡ .T. pokud byl proveden skok na zadanì z znam.
+        (prov d¡ norm ln¡ GO rec. - neakceptuje filtry)
+        Nen¡-li v zadan‚ oblasti otevýen  datab ze neprovede se nic (.F.).
+
+        Tato funkce je vhodn  tam kde je potýeba obnovit p…vodn¡ nastaven¡
+        z znamu.
+
+                Pý¡klad:                        Dý¡ve:
+                        PRIVATE rec             ...
+                        rec=recno()         /-  IF betw(m.rec,1,recc())
+                        ...                /        GO m.rec
+                        =gorec(m.rec)   --<     ELSE
+                                           \        GO BOTTOM
+                                            \       SKIP
+                                             \- ENDIF
+
+ELIST (<expN1>, <expR1> [,<expR2>, <expR3>, ..., <expR20>])
+        Vrac¡ hodnotu n-t‚ho vìrazu <expRn> podle <expN1>.
+        Pokud je <expN1> menç¡ ne§ 1, nebo vØtç¡ ne§ poŸet vìraz… <expRn>,
+        vrac¡ pr zdnou hodnotu stejn‚ho typu jako je <expR1>.
+
+CASES (<expL1>, <expR1> [,<expL2>, <expR2>, ...] [,<expRn>])
+        Vrac¡ hodnotu vìrazu <expR> podle prvn¡ho <expL>, kterì je .T.
+        Pokud nem  § dnì <expL> hodnotu .T. vr t¡ funkce hodnotu posledn¡ho
+        vìrazu <expRn>, kterì u§ nen¡ v p ru s <expL>.
+        Nen¡-li zad n ani n hradn¡ vìraz <expRn> vr t¡ funkce pr zdnou
+        hodnotu stejn‚ho typu a d‚lky jako je <expR1>.
+        Maxim ln¡ poŸet <expL> je 11.
+
+SWITCH (<expR1>, <expR2>, <expR3> [,<expR4>, <expR5>, ...] [,<expRn>])
+SWITCHE (--//--)
+        Vrac¡ hodnotu vìrazu <expR3> (nebo <expR5> ...) v z vislosti
+        na podm¡nce <expR1>=<expR2> (nebo <expR1>=<expR4> ...).
+        Nen¡-li § dn  ze zadanìch hodnot (<expR2>, <expR4> ...) rovna
+        hodnotØ vìrazu <expR1> vr t¡ funkce hodnotu n hradn¡ho vìrazu <expRn>.
+        Nen¡-li zad n ani n hradn¡ vìraz <expRn> vr t¡ funkce pr zdnou
+        hodnotu stejn‚ho typu a d‚lky jako je <expR2>.
+        Maxim ln¡ poŸet hodnot (<expR2>, <expR4> ...) je 11.
+          <expR1> - Z kladn¡ hodnota (lev  strana podm¡nky)
+          <expR2> - Konstanta (prav  strana podm¡nky)
+          <expR3> - Vìsledek
+          <expR4> - Druh  konstanta
+          <expR5> - Druhì vìsledek
+              atd.
+          <expRn> - N hradn¡ vìsledek
+        Zjednoduçenì z pis parametr…:
+        SWITCH (var, const1, return1 [,const2, return2 ...] [,otherwise])
+        Funkce SWITCH a SWITCHE se liç¡ pouze pýi porovn v n¡ ýetØzc…:
+          SWITCH()      - EXACT OFF   (<expR1>=<expR2>)
+          SWITCHE()     - EXACT ON    (<expR1>==<expR2>)
+
+EFF_... ()
+        Funkce pro revizi efektivnosti pr ce s programem. PoŸ¡t  Ÿas, kterì
+        vyu§ije u§ivatel psan¡m na kl vesnici, Ÿas vyu§itì pro vlastn¡ pr ci
+        programu, Ÿas Ÿek n¡ a poŸet stisknutìch kl ves. (vçechny Ÿasy jsou
+        v sekund ch.)
+
+        EFF_START ()    - Spust¡ poŸ¡t n¡ Ÿas… a kl ves (vynuluje stav).
+        EFF_STOP ()     - Zastav¡ poŸ¡t n¡ Ÿas… a kl ves.
+        EFF_CONT ()     - Spust¡ poŸ¡t n¡ Ÿas… a kl ves (pokraŸov n¡).
+        EFF_USER ()     - Vrac¡ Ÿas psan¡ na kl vesnici.
+        EFF_WAIT ()     - Vrac¡ Ÿas Ÿek n¡.
+        EFF_CPU ()      - Vrac¡ Ÿas vyu§itì pro vlastn¡ pr ci programu.
+        EFF_TOTAL ()    - Vrac¡ celkovì Ÿas od EFF_START() (mimo pozastaven¡)
+
+        EFF_KTIM (<expN1> [,<expN2>])
+                Nastav¡ maxim ln¡ dobu mezi stiskem kl ves na <expN1> sekund
+                (impl. 10s), pokud bude doba mezi stiskem kl ves vØtç¡
+                ne§ <expN1>, bude  zapoŸ¡t na jako Ÿek n¡.
+                <expN2> je poŸet sekund, kter‚ se maj¡ pýiŸ¡st k prvn¡
+                kl vese po Ÿek n¡ (impl. 2s), je to doba potýebn  ke stisku
+                prvn¡ kl vesy po pý¡chodu k poŸ¡taŸi.
+                (<expN2> mus¡ bìt menç¡ ne§ <expN1> a <expN1> by mØlo bìt
+                vØtç¡ ne§ nula).
+
+        EFF_KEYS (1)  - Vrac¡ poŸet vçech stisknutìch kl ves.
+        EFF_KEYS ()   - Vrac¡ poŸet stisknutìch kl ves, kromØ:
+                TAB,SHIFT+TAB,CTRL+TAB,HOME,END,PGUP,PGDN,
+                UP,DOWN,LEFT,RIGHT,CTRL+UP,CTRL+DOWN,CTRL+LEFT,CTRL+RIGHT
+
+SSV_... ()
+        Funkce pro ochranu obrazovky "SCREEN SAVER".
+        SSV_START() - Zapnut¡ ochrany obrazovky.
+        SSV_STOP()  - Vypnut¡ ochrany obrazovky.
+        SSV_SET(<expN1> [,<expN2> [,<expN3>]])
+          <expN1> - Doba od stisku kl vesy do zhasnut¡ obrazovky (impl. 120s)
+          <expN2> - K¢d znaku zobrazovan‚ho na zhasnut‚ obrazovce (impl. 219)
+                    (je-li >255 bude vyçç¡ byte pou§it pro prvn¡ ze dvou znak…)
+          <expN3> - Barva znaku zobrazovan‚ho na zhasnut‚ obrazovce (impl. 3)
+                    (je-li >255 bude vyçç¡ byte pou§it pro prvn¡ ze dvou barev)
+
+NUMLEN (<expN1>)
+        Vrac¡ vnitýn¡ d‚lku Ÿ¡sla <expN1>
+
+NUMDEC (<expN1>)
+        Vrac¡ vnitýn¡ poŸet desetinnìch m¡st Ÿ¡sla <expN1>
+
+MSG ([<expR1> [, ... <expR32>]])
+        Zobraz¡ text pro u§ivatele v oknØ.
+        <expR1> ... <expR32> jsou voliteln‚ n sleduj¡c¡ parametry:
+          <expC1> = N zev okna (pokud zaŸ¡n  teŸkou a je pýed prvn¡m textem)
+          <expC2> = Pýep¡naŸe  (pokud zaŸ¡n  mý¡§kou '#' a je pýed 1. textem)
+          <expN1> = Y-ov  souýadnice okna (impl. -1 = vycentrovat nebo posledn¡)
+          <expN2> = X-ov  souýadnice okna (impl. -1 = vycentrovat nebo posledn¡)
+          <expN3> = ¬¡slo barevn‚ho sch‚matu pro okno (impl. 5)
+          <expN4> = ¬¡slo barvy ze sch‚matu pro text (impl. 1)
+          <expN5> = ¬¡slo barvy ze sch‚matu pro ~txt (impl. 7 pro sch.5 jinak 9)
+          <expC3-25> = Texty (nevejde-li se text na ý dek bude rozdØlen)
+        N zev okna je max. 10 znak… a mus¡ zaŸ¡nat teŸkou.
+        Pýep¡naŸe:
+          W  = ¬ekat na stisk libovoln‚ kl vesy a pak zruçit okno
+          N  = NeŸekat na stisk kl vesy a okno ponechat na obrazovce
+          C  = CLEAR TYPEAHEAD
+          !  = ¬ekat dokud nen¡ stisknuta kl vesa ESC (ev. CTRL+ENTER)
+          B  = Jednoduch‚ p¡pnut¡
+          B2 = Dvojit‚ p¡pnut¡ pro chybov‚ hl çen¡
+          B3 = Tý¡t¢novì ukonŸovac¡ sign l
+          B0 = Zak z n¡ zvuku (napý. "#EB0")
+          S  = R meŸek okna - SINGLE
+          D  = R meŸek okna - DOUBLE
+          P  = R meŸek okna - PANEL
+          $  = R meŸek okna - SYSTEM
+          ~z = Nahrazen¡ znaku pro zvìraznØnì text znakem z
+          E  = Nastaven¡: "#WCB2D" a sch‚ma=7
+        Pokud je prvn¡m znakem textu '~' (nen¡-li urŸeno pýep¡naŸem '~' jinak)
+        bude text vyps n barvou <expN5>. M -li bìt prvn¡m znakem '~' mus¡ bìt
+        uveden dvakr t (napý. "~~text"), nebo zmØnit pýep¡naŸem.
+        NezaŸ¡n -li text mezerou bude v oknØ vycentrov n.
+        Pokud nen¡ zad no jm‚no okna (nebo je pr zdn‚ ".") je implicitnØ
+        nastaven pýep¡naŸ W, jinak N.
+        Nen¡-li zad na Y-ov  souýadnice (nebo je-li zad na hodnota -1)
+        a jedn  se o nov‚ okno, bude um¡stØno doprostýed obrazovky,
+        nebo pod nejn¡§e polo§en‚ pýedeçl‚ okno funkce MSG (ev. funkce PERC).
+        SouŸasnØ m…§e bìt zobrazeno maxim lnØ 20 tØchto oken
+        pro funkce MSG a PERC (n zvy nejsou spoleŸn‚).
+        Zruçen¡ dý¡ve definovan‚ho okna: =msg(".<okno>")
+        Zruçen¡ vçech oken funkce MSG: =msg()
+        Pý¡klady:
+                =msg("Hello world.")
+                =msg([.WND], 3, " Hello world.", " Good bye.")
+                =msg([.WND])
+                =msg([#E!B0], "Error message", "Sorry", "~Press ESC")
+
+WATTR (<expN1> | <expC1> [,1])
+        Funkce vrac¡ atribut barvy jako hodnotu byte pro obrazovku.
+          <expN1> = ¬¡slo barvy ve sch‚matu pr vØ aktivn¡ho okna (1-11)
+                    (0 = naposledy pou§it  barva)
+          <expC1> = Barva ve tvaru FoxPro (napý. "W+/RB")
+          1       = je-li zad n nepovinnì parametr '1', nebude chybov‚
+                    hl çen¡ v pý¡padØ chybn‚ho parametru a funkce vr t¡ -1
+
+_SAYC (<expN1>, <expN2>, <expC1>, <expN3>, <expL1>, <expC2>)
+        Vìpis ýetØzce <expC1> na souýadnice <expN1>, <expN2> podle
+        barevn‚ definice <expC2> (pro pou§it¡ v LIST_C).
+          <expN1> = Y-ov  souýadnice
+          <expN2> = X-ov  souýadnice
+          <expC1> = Vypisovanì ýetØzec
+          <expN3> = Z kladn¡ barevnì attribut
+          <expL1> = Povoleni zmeny podkladu (jinak bude maska&=10001111)
+          <expC2> = Definice barev
+        Definice barev:
+          --------------------------------------------------------------
+          | l1,m1,a1,255,l2,m2,a2,255,l3,m3,o1,...0, exp1,0,exp2,0,... |
+          --------------------------------------------------------------
+             l1,l2,...  - D‚lka Ÿ sti ýetØzce (0=konec, n sleduj¡ vìrazy)
+             m1,m2,...  - Maska barevn‚ho atributu (FpppHiii)
+             a1,a2,...  - Barevnì atribut (pokud za n¡m n sleduje byte 255 (FFh))
+             o1,o2,...  - offset (2 byte) na vìraz definuj¡c¡ barvu (od zaŸ tku)
+             exp1,...   - Vìraz definuj¡c¡ barvu (mus¡ n sledovat 0).
+                          Hodnota tohoto vìrazu mus¡ bìt typu N nebo C stejnØ
+                          jako parametr funkce WATTR()
+
+_SAYC_MODE ([<expN1>])
+        Nastav¡ m¢d pro zobrazen¡ barev funkce _SAYC()
+          <expN1> = m¢d 0=Autodetekce, 1=Color, 2=Mono
+        Vrac¡ aktu ln¡ m¢d (pokud je m¢d 0 bude provedena autodetekce)
+        Autodetekce nastav¡ m¢d 2=Mono pokud:
+            a) scheme(1,1) je W/N, W+/N, nebo N/W (blik n¡ * je ignorov no)
+            b) funkce iscolor() vrac¡ .F.
+
+_SAYC_VER ()
+        Vrac¡ Ÿ¡slo verze funkce _SAYC()
+
+SETSYSDATE (<expN1>, <expN2>, <expN3>)
+        Nastaven¡ syst‚mov‚ho datumu DOSu
+          <expN1> = Den
+          <expN2> = MØs¡c
+          <expN3> = Rok (1980-2099)
+        Vrac¡ .T./.F. zda se povedlo nastavit datum.
+
+SETSYSTIME (<expN1>, <expN2> [,<expN3>])
+        Nastaven¡ syst‚mov‚ho Ÿasu DOSu
+          <expN1> = Hodiny
+          <expN2> = Minuty
+          <expN3> = Sekundy (impl. 0)
+        Vrac¡ .T./.F. zda se povedlo nastavit Ÿas.
+
+IS_NUM (<expC1> [,<expN1> [,<expN2> [,<expL1>]]])
+        Vrac¡ .T./.F. zda ýetØzec <expC1> obsahuje pouze Ÿ¡slice
+          <expN1> = PoŸ teŸn¡ pozice pro testov n¡ (impl. 1)
+          <expN2> = PoŸet testovanìch znak… (impl. do konce)
+          <expL1> = Pokud je .T. m…§e testovanì ýetØzec zaŸ¡nat
+                    na pozici <expN1> znakem '-'
+
+CHR2 (<expN1>)
+        Pýevede Ÿ¡slo <expN1> na ýetØzec 2 byte
+
+CHR4 (<expN1>)
+        Pýevede Ÿ¡slo <expN1> na ýetØzec 4 byte
+
+C2NUM (<expC1> [,<expN1> [,<expN2>]])
+        Pýevede ýetØzec <expC1> 1-4 byte na Ÿ¡slo
+        <expN1> - pozice prvn¡ho byte v ýetØzci (impl. 1)
+        <expN2> - poŸet pýev dØnìch byte (impl. 4)
+
+_SETFATTR (<expC1>, <expC2>)
+        Nastav¡ atributy souboru
+        <expC1> = Jm‚no souboru
+        <expC2> = Atributy
+                   R = READONLY
+                   A = ARCH
+                   S = SYSTEM
+                   H = HIDDEN
+             (Atributy V a D jsou nepý¡pustn‚, ostatn¡ znaky ignoruje.)
+
+_SETFTIME (<expC1>, <expN1>,<expN2>,<expN3>, <expN4>,<expN5>,<expN6>)
+        Nastav¡ datum a Ÿas souboru
+        <expC1> = Jm‚no souboru
+        <expN1> = Den
+        <expN2> = MØs¡c
+        <expN3> = Rok
+        <expN4> = Hodiny
+        <expN5> = Minuty
+        <expN6> = Sekundy
+
+BCAST ([<expN1>])
+        Nastav¡ nebo zjist¡ re§im s¡œovìch zpr v
+        <expN1> = novì re§im zpr v:
+                  0 - Zpr vy ze server…, i z jinìch stanic. (Zpracuje shell.)
+                  1 - Zpr vy jen ze server… (Zpracuje shell.)
+                  2 - Zpr vy jen ze server… (Shell ignoruje.)
+                  3 - Zpr vy ze server…, i z jinìch stanic. (Shell ignoruje.)
+        Pýi re§imu 2 a 3 lze zpr vy vyzvednout funkc¡ NETMSG()
+        Vrac¡ aktu ln¡ re§im
+
+NETMSG ([<expN1>, <expC1>])
+        Odesl n¡ nebo vyzvednut¡ s¡œov‚ zpr vy
+        Odesl n¡ zpr vy:
+        <expN1> = ¬¡slo spojen¡ pýiýazen‚ c¡lov‚ stanici (viz. NETCONN())
+        <expC1> = Text odes¡lan‚ zpr vy (max. 55 znak…)
+        Vrac¡: 0-OK, jin  hodnota-chyba
+          NejŸastØjç¡ chyby:
+            252 - Zam¡tnuto, buffer zpr v c¡lov‚ho spojen¡ ji§ obsahuje zpr vu.
+            253 - æpatn‚ Ÿ¡slo spojen¡
+            255 - Blokov no, re§im zpr v c¡lov‚ho spojen¡ je nastaven na
+                  blokov n¡ zpr v, nebo c¡lov‚ spojen¡ nen¡ pou§¡v no.
+        Vyzvednut¡ zpr vy (bez parametr…):
+        Vrac¡ text zpr vy, nebo pr zdnì ýetØzec pokud nen¡ § dn  zpr va.
+        (Prakticky lze pou§¡t pouze pýi re§imu zpr v 2 a 3 viz BCAST())
+        
+NETMSGON ([<expN1>])
+        Zapnut¡ automatick‚ho zjiçœov n¡ pý¡choz¡ zpr vy ka§d‚ 2 vteýiny.
+        Pokud je pýijata zpr va, bude do bufferu kl vesnice vlo§en
+        k¢d kl vesy F11 a to ka§d‚ dalç¡ 2s dokud nebude zpr va
+        vyzvednuta funkc¡ NETMSG()
+        (Prakticky lze pou§¡t pouze pýi re§imu zpr v 2 a 3 viz BCAST())
+        <expN1> = K¢d pou§it‚ kl vesy (impl. 34048 (8500h) = F11)
+                  (pro F12 lze pou§¡t k¢d 34304 (8600h))
+                  Pro k¢dy kl ves s pýep¡naŸi CTRL, ALT a SHIFT
+                  (napý. SHIFT+F11 = 34560 (8700h)) bohu§el nelze pou§¡t
+                  oçetýen¡ pomoc¡ ON KEY LABEL.
+
+NETMSGOFF ()
+        Vypnut¡ automatick‚ho zjiçœov n¡ pý¡choz¡ zpr vy.
+
+NETMSG_PR ([<expN1>])
+        Zak z n¡/povolen¡ pý¡jmu zpr v od tisk rny ("Printer ...")
+        <expN1> = 0 - Zak z n¡ (zpr vy zaŸ¡naj¡c¡ textem "Printer "
+                      budou ignorov ny)
+                  1 - Povolen¡ (budou pýijaty a zobrazeny vçechny zpr vy)
+        Vrac¡ aktu ln¡ nastaven¡ (0/1)
+
+

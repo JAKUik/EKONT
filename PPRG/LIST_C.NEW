@@ -1,0 +1,861 @@
+
+
+Syntaxe LIST_C:
+ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+
+    DO list_c WITH <y>, <x>, <lines>, <color>, <title>, <def_lines>, <...>
+
+        <y>, <x>    - Sou©adnice okna pro LIST_C (je-li zad no -1 = centrovat)
+        <lines>     - Po‡et © dk– datab ze v oknˆ LIST_C
+        <color>     - Definice barev
+        <title>     - Nadpis v r me‡ku okna
+        <def_lines> - Definice © dk– pro LIST_C
+        <...>       - Ostatn¡ definice
+
+Definice barev:
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    a) <‡¡slo> = ‡¡slo barevn‚ho sch‚matu
+
+          LIST_C pou‘¡v  jednotliv‚ barvy ze sch‚matu n sledovnˆ:
+                1 - © dky menu (je-li zad na hodnota<0)
+                2 - © dky menu (je-li zad na hodnota>0)
+                3 - r me‡ek
+                4 - nadpis r me‡ku
+                6 - ukazatel
+                7 - hlavi‡ka (popis sloupc–)
+
+    b) <©etˆzec_‡¡sel>  (nap©. '4,2,4,7,3,6')
+
+        Barvy v t‚to definici jsou v po©ad¡:
+            'scheme, txt, title, head, border, select'
+
+          scheme    - ‡¡slo barevn‚ho sch‚matu               (impl. 4)
+          txt       - © dky menu (je-li zad na hodnota>0)    (impl. 2)
+          title     - nadpis r me‡ku                         (impl. 4)
+          head      - hlavi‡ka (popis sloupc–)               (impl. 7)
+          border    - r me‡ek                                (impl. 3)
+          select    - ukazatel                               (impl. 6)
+
+    c) <#©etˆzec>
+
+        '#1'  - Barvy p©ibli‘nˆ podle sch‚ma 1   (taky '#2')
+        '#4'  - Barvy p©ibli‘nˆ podle sch‚ma 4   (taky '#3')
+        '#5'  - Barvy p©ibli‘nˆ podle sch‚ma 5   (taky '#6')
+        '#7'  - Barvy p©ibli‘nˆ podle sch‚ma 7   (taky '#12')
+        '#8'  - Barvy p©ibli‘nˆ podle sch‚ma 8   (taky '#9')
+        '#15' - Barvy p©ibli‘nˆ podle sch‚ma 15
+
+        '#N'  - €ern         \
+        '#B'  - Modr          ³
+        '#G'  - Zelen         ³
+        '#C'  - Modrozelen     >  Nen¡ ovlivnˆno sch‚maty.
+        '#R'  - €erven        ³   Funguje spr vnˆ pouze s
+        '#M'  - Fialov        ³   p©¡slu¨nou verz¡ FOXLIB
+        '#Y'  - Hnˆd          ³
+        '#W'  - B¡l          /
+
+Definice © dk– pro LIST_C:
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    syntaxe:
+        [:<expC>]
+        "/<nadpis>"
+        '|<colors>'
+        [:<expC>]
+        "/<nadpis>"
+        '|<colors>'
+          .
+          .
+          .
+
+    p©¡klad:
+        [:str(cislo,8)+' ³ '+nazev+' '+mesto+' '+psc]
+        "/   €¡slo ³ N zev             Mˆsto           PS€"
+        '|111111111-2..................3333333333333333333'
+        [:str(cislo,8)+' ³ '+nazev+' '+telefon]
+        "/   €¡slo ³ N zev             Telefon"
+        '|111111111-2..................YYYYYYYYYYYYYYYYYYY'
+
+    p©¡klad definice barev:
+        [||1=iif(cislo>0, 0, 'R')]
+        [||2=iif(cislo>0, 'B','R')]
+        [||3sp='GR+/B']
+
+    Definice barev:
+      "||<k¢d><p©¡znaky> = <v˜raz>"
+
+      <k¢d>       - K¢d barvy, znak 0-9 nebo A-Z (nerozli¨uje mal‚ a velk‚)
+      <p©¡znaky>  - S = 'Static' vyhodnotit v˜raz pouze na za‡ tku
+                    P = 'Paper' - povol¡ i barvu podkladu
+                    F = 'Flash' - povol¡ blik n¡ (pokud odpov¡d  hodnotˆ v˜razu)
+                    I = 'Ink' - zak ‘e barvu inkoustu
+      <v˜raz>     - V˜raz typu 'N', nebo 'C'. Je-li v˜raz typu 'N', bude toto
+                    ‡¡slo ch p no jako ‡¡slo barvy ve sch‚matu pro LIST_C.
+                    Je-li v˜raz typu 'C', mus¡ obsahovat platnou definici barvy.
+                    Pokud je hodnota v˜razu 0 nebo pr zdn˜ ©etˆzec, bude pou‘ita
+                    implicitn¡ barva
+      M¡sto oddˆlova‡e '=' lze pou‘¡t i ':' nebo jen mezeru
+
+
+
+
+Ostatn¡ definice:
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+a) Definice index–:
+    "{[-][!] tag [=n] [/A|D|?|N] [nazev], tag[.][=n], ...}"
+    zad n¡m '-' budou vybr ny v¨echny kromˆ tˆchto index–
+    zad n¡m '!' nebude za©azena volba "Net©¡dit"
+    zad n¡m n zvu (za mezerou) bude tento n zev pou‘it v menu p©i F7
+        (m–‘e obsahovat '\<')
+    zad n¡m '.' na konci indexu bute vytvo©en n zev podle jm‚na indexu
+        tak ‘e prvn¡ znak bude velk˜ a ostatn¡ mal‚ (pak m–‘e jm‚no indexu
+        obsahovat '\<')
+    =n  - ‡¡slo (n-t‚) definice © dku pro zadan˜ index.
+    /A = pouze ASCENDING
+    /D = pouze DESCENDING
+    /? = podmenu smˆru t©¡dˆn¡ "Vzestupnˆ" a "Sestupnˆ"
+    /N = nemˆnit smˆr t©¡dˆn¡
+
+  P©¡klad:
+    '{! D\<ATUM./A,PRIJEM=2/? \<P©¡jem,VYDEJ/? \<V˜dej,\<DRUH.,SPZ,POZNAMKA P\<ozn mka}'
+
+b) "#SET=volby"
+
+  Volby:
+        K-  = Vypne maz n¡ bufferu kl vesnice po ka‘d‚m pohybu v menu
+        W-  = Vypne v˜pis "Pracuji ..." po dlouho trvaj¡c¡ operaci
+        P-  = Zak ‘e tisk pomoc¡ F9 (resp. CTRL+F9)
+        S-  = Zak ‘e posuv mezi definicemi © dk– pomoc¡ kurzorov˜ch ¨ipek
+        C-  = Nastav¡ (pouze pro LIST_C) SET CENTURY OFF
+        D-  = Nastav¡ (pouze pro LIST_C) SET DELETED OFF
+        O+  = P©i v˜bˆru indexu (F7) lze ur‡it ASCENDING/DESCENDING
+        F-  = Z kaz vyhled v n¡ pomoc¡ kl ves
+        L-  = Barvy © dk– (jsou-li def.) budou impl. vypnuty (zapnout CTRL+B)
+        A-  = Okno LIST_C bude bez st¡nu
+        B+  = Definice podkladu barvy © dku bude uplatnˆna i p©ez ukazatel
+
+    P©¡klad:   "#SET= K- W- P+ S+ C-"
+
+c) "#P=soubor" - (pro ulo‘en¡ nastaven¡ tisku, viz V 3.44)
+
+d) "#BEFKEY= p©¡kaz"
+        - provede zadan˜ p©¡kaz v‘dy bezprost©ednˆ p©ed ‡ek n¡m na kl vesu
+   "#AFTKEY= p©¡kaz"
+        - provede zadan˜ p©¡kaz v‘dy bezprost©ednˆ po ‡ek n¡ na kl vesu
+   "#TIMEOUT= sec. [, p©¡kaz]"
+        - nen¡-li do uplynut¡ zadan‚ho ‡asu (sec.) stisknuta ‘ dn  kl vesa,
+          provede se zadan˜ p©¡kaz (implicitnˆ se provede stisk kl vesy ESC)
+          p©¡klady:
+              "#TIMEOUT=5"                  - po 5s. stiskne ESC
+              "#TIMEOUT=.5, RefScr=.T."     - obnovov n¡ obrazovky po 1/2s.
+              "#TIMEOUT=4, DO myproc"       - po 4s. spust¡ MYPROC
+              "#TIMEOUT=3, k=einkeyc('F1')" - po 3s. stiskne F1
+           (samoz©ejmˆ lze definovat pouze jeden TIMEOUT)
+
+e) "#WLIST= okno"
+        - Jm‚no okna pro LIST_C (ulo‘¡ se do promˆnn‚ LIST_WND), pokud
+          ji‘ okno tohoto jm‚na existuje, bude zru¨eno.
+   "#WHLN= okno"
+        - Jm‚no okna pro © dek n povˆdy (ulo‘¡ se do promˆnn‚ HLN_WND),
+          pokud je definov n © dek n povˆdy a okno tohoto jm‚na ji‘ existuje,
+          bude zru¨eno. Tato definice mus¡ b˜t um¡stˆna p©ed definic¡ © dku
+          n povˆdy, jinak se neuplatn¡.
+   "#SAVWND"
+        - Po ukon‡en¡ LIST_C z–stane okno na obrazovce
+   "#SAVHLN"
+        - Po ukon‡en¡ LIST_C z–stane okno © dku n povˆdy na obrazovce
+
+f) '#SUM= text:v˜raz, text:v˜raz ...'  - definice sou‡t– (viz V 3.47)
+   '#FLT= text:v˜raz, text:v˜raz ...'  - definice fitr–  (viz V 3.47)
+   '#IDX= pole [, <expL>]'             - definice
+
+g) Definice kl ves:
+    '<kl>[#]: <p©¡kaz> [## text helpu]'
+
+     <kl> - jm‚no (nebo ‡¡seln˜ k¢d) kl vesy (nap©. INS, DEL, CR, SPC, {+})
+     #    - automatick˜ test eof() (p©i EOF nebude p©¡kaz proveden)
+
+h) ž dek n povˆdy:
+   P©¡klad:
+     "\  F1-Help    F4-Oprava £daje    ENTER-Prohl¡‘en¡    F7-T©¡dit podle ..."
+
+
+
+P©¡klad kompletn¡ definice:
+ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+
+    DO list_c WITH -1,-1, 19,0, " Prvn¡ p©¡klad ",;
+        [: dtoc(datum)+str(prijem,12,2)+str(vydej,12,2)+'   '+druh+' '+left(poznamka,13) ],;
+        "/Datum         P©¡jem       V˜dej   Druh            Pozn mka",;
+        '|         11111111111 22222222222-',;
+        [: dtoc(datum)+' '+druh+' '+left(poznamka,39) ],;
+        "/Datum    Druh            Pozn mka",;
+        [: dtoc(datum)+' '+left(poznamka,55) ],;
+        "/Datum    Pozn mka",;
+        [||1=iif(prijem>1000,'G+',0)],;
+        [||2=iif(vydej>1000,'R',0)],;
+        "\  F1-Help    F4-Oprava £daje    ENTER-Prohl¡‘en¡    F7-T©¡dit podle ...",;
+        '{! D\<ATUM./A,PRIJEM=2/? \<P©¡jem,VYDEJ/? \<V˜dej,\<DRUH.,SPZ,POZNAMKA P\<ozn mka}',;
+        'CR#:  DO editrec.spr WITH .F.,.F.   ## Prohl¡‘en¡ £daje',;
+        'INS:  DO editrec.spr WITH .T.,.T.   ## Nov˜ £daj',;
+        'F4#:  DO editrec.spr WITH .F.,.T.   ## Oprava £daje',;
+        'DEL#: DO delrec  ## Vymaz n¡ £daje'
+
+
+
+
+Novinky a podrobnosti od verze 3.2:
+ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ
+
+
+        LIST_C.PRG  V 3.2
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Mus¡ b˜t dostupn  knihovna FOXLIB.PLB (viz SET LIBRARY)
+- Umo‘¤uje vyu‘¡t vˆt¨¡ mno‘stv¡ kl ves (nap© ALT+F5 a jin‚)
+  (pou‘¡v  funkce EINKEY() a EINKEYC() z knihovny FOXLIB.PLB)
+
+- Existuje-li znakov‚ pole ON_LIST_C[] bude p©ebr no stejnˆ jako
+  ostatn¡ definice kl ves v parametrech podprogramu (definice v parametrech
+  maj¡ v¨ak p©ednost)
+
+- P©i zad n¡ z porn‚ho ‡¡sla barevn‚ho sch‚matu bude pou‘ita absolutn¡
+  hodnota a pro jednotliv‚ © dky bude pou‘ita prvn¡ (m¡sto druh‚) barva
+  ze zadan‚ho sch‚matu.
+
+        Pou‘it¡ barev z barevn‚ho sch‚matu:
+                1 - © dky menu (je-li zad na hodnota<0)
+                2 - © dky menu (je-li zad na hodnota>0)
+                3 - r me‡ek
+                4 - nadpis r me‡ku
+                6 - ukazatel
+                7 - hlavi‡ka (popis sloupc–)
+
+- P©i prov dˆn¡ nadefinovan‚ho p©¡kazu (definice kl vesy) si pamatuje:
+        SELECT ...
+        SET FILTER TO ...
+        SET ORDER TO TAG ...
+
+- Do¨lo-li p©i proveden¡ nadefinovan‚ho p©¡kazu ke zmˆnˆ obsahu polo‘ky
+  datab ze, podle n¡‘ je datab ze pr vˆ set©¡zena provede se oboven¡
+  obsahu okna.
+
+- V parametrech podprogramu lze zadat "/text". Tento text bude vyps n jako
+  z hlav¡ menu uvnit© okna. Takto lze nadefinovat popis sloupc– v menu.
+  Zad n¡m "//text" bude pod t¡mto z hlav¡m vykreslena dvojit  oddˆlovac¡ linka,
+  a pokud text obsahuje svisl‚ znaky r me‡ku bude provedeno jejich propojen¡
+  s oddˆlovac¡ linkou.
+
+
+
+
+        LIST_C.PRG  V 3.3
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Lep¨¡ p©ekreslov n¡ obrazovky po zmˆnˆ dat v z znamu, p©i zmˆnˆ t©¡dˆn¡,
+  p©i vyhled v n¡ a p©i stisku kl ves HOME,END,PgUp a PgDn.
+  (nenastavuje ukazatel v‘dy na prvn¡ pozici)
+
+- Po proveden¡ operace, kter  trvala d‚le ne‘ 4 sekundy se nastav¡ re‘im,
+  kdy se p©i prov dˆn¡ dal¨¡ libovoln‚ operace vyp¡¨e zpr va "Pracuji ..."
+  a p©i vyhled v n¡ se vyp¡¨e zpr va "Hled m ..."
+
+- Roz¨¡©en˜ po‡et nepovin˜ch parametr– (definice kl ves atd.) a‘ na 20.
+
+
+
+
+        LIST_C.PRG  V 3.32
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Testuje d‚lku defini‡n¡ho © dku a vypisuje hl ¨en¡:
+        "Definice © dku LIST-MENU je dlouh  XXX, maximum je 255 !"
+    t¡m je tato chyba odli¨ena od chyby:
+        "Chybn  definice © dku LIST-MENU!"
+
+- P©i vstupu do LIST_C provede test zda je na za‡ tku datab ze, jinak
+  nastav¡ ukazatel v menu p©ibli‘nˆ do prost©ed okna, aby bylo na prvn¡
+  pohled patrno ‘e existuj¡ z znamy i p©ed t¡mto ukazatelem.
+
+- Roz¨¡©en  spolupr ce s my¨¡:
+  p©i stisku lev‚ho tla‡¡tka my¨i na z znam na kter‚m nen¡ ukazatel
+  posune ukazatel na tento z znam. Pokud ji‘ ukazatel na tomto z znamu
+  stoj¡, provede se akce definovan  pro kl vesu ENTER
+
+- Pokud je za definic¡ kl vesy znak '!' zavol  se p©ed proveden¡m akce
+  funkce WORKING() z knihovny FOXLIB.PLB, kter  vyp¡¨e zpr vu "Pracuji...".
+  Tuto zpr vu lze p©¡padnˆ v podprogramu definovan‚m pro kl vesu zru¨it
+  funkc¡ ENDWORK(). Dal¨¡ informace viz popis FOXLIB.PLB
+
+
+
+
+        LIST_C.PRG  V 3.34
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Vyhled v n¡ i pomoc¡ numerick˜ch a datumov˜ch index–.
+  Je-li nastaveno SET ORDER na numerick˜, nebo datumov˜ index a stiskne-li
+  u‘ivatel ‡¡slici 0-9 (v p©¡padˆ numerick‚ho indexu tak‚ znaky minus a te‡ku),
+  zobraz¡ se dotaz na ‡¡slo (resp. datum), kter‚ m  b˜t vyhled no.
+  Pokud je zadan  hodnota nalezena, nastav¡ se ukazatel na tuto hodnotu.
+  V p©¡padˆ, ‘e nebyla hodnota nalezena je toto ozn meno hl ¨en¡m "Nenalezeno!"
+  a zvukov˜m sign lem, ukazatel se nastav¡ na nejbli‘¨¡ n sleduj¡c¡ hodnotu
+  (pokud takov  existuje).
+
+
+
+
+        LIST_C.PRG  V 3.35
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Pokud je zji¨tˆna chyba: "Chybn  definice © dku LIST-MENU!" a z rove¤
+  je nastavena promˆnn  LADENI na .T. bude provedena anal˜za definice © dku.
+  Definice © dku bude zobrazena v oknˆ na ‡ern‚m podkladu a p©i anal˜ze budou
+  postupnˆ p©ebarveny vyhovuj¡c¡ ‡ sti na zeleno a nevyhovuj¡c¡ na ‡erveno
+  s blik n¡m. (Ve verzi 3.4 lze vyvolat tuto anal˜zu i pokud nen¡ nastavena
+  promˆnn  LADENI, po ozn men¡ chyby kl vesou CTRL+A)
+
+
+
+
+        LIST_C.PRG  V 3.4
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Umo‘¤uje zadat v¡ce definic © dku, kter‚ je pak mo‘no p©ep¡nat kurzorov˜mi
+  kl vesami "LEFT" a "RIGHT". Tyto definice mus¡ za‡¡nat znakem ':' a ka‘d 
+  dal¨¡ definice z hlav¡ ('/...') je pak automaticky p©i©azena t‚to definici
+  © dku. Pokud i z kladn¡ definice za‡¡n  dvojte‡kou je mo‘no ji v parametrech
+  p©ehodit s parametrem nadpisu okna. Nach z¡-li se za dvojte‡kou poml‡ka,
+  nebude se zobrazovat ukazatel aktu ln¡ definice ( <..þ...> ).
+
+  P©¡klad:
+
+    DO list_c WITH -1,-1, 19,0, " Prvn¡ p©¡klad ",;
+        [: dtoc(datum)+str(prijem,12,2)+str(vydej,12,2)+'   '+druh+' '+left(poznamka,13) ],;
+        "/Datum         P©¡jem       V˜dej   Druh            Pozn mka",;
+        [: dtoc(datum)+' '+druh+' '+left(poznamka,39) ],;
+        "/Datum    Druh            Pozn mka",;
+        [: dtoc(datum)+' '+left(poznamka,55) ],;
+        "/Datum    Pozn mka",;
+        "\  F1-Help    F4-Oprava £daje    ENTER-Prohl¡‘en¡    F7-T©¡dit podle ...",;
+        '{DATUM,PRIJEM,VYDEJ,DRUH,SPZ,POZNAMKA}',;
+        'CR#: DO editrec WITH .F.,.F.   ## ENTER-Prohl¡‘en¡ £daje',;
+        'INS: DO editrec WITH .T.,.T.   ## INS-Nov˜ £daj',;
+        'F4#: DO editrec WITH .F.,.T.   ## F4-Oprava £daje'
+
+- Pomoc¡ kl vesy CTRL+F lze zadat ©etˆzec kter˜ bude vyhled n podle aktu ln¡
+  definice © dku. Vyhled v n¡ prob¡h  od aktu ln¡ho z znamu do konce datab ze.
+  Hledan˜ ©etˆzec m–‘e obsahovat znaky '*' a '?', pokud nen¡ na za‡ tku ani
+  na konci znak '*' bude doplnˆn aby byl nalezen libovoln˜ v˜skyt tohoto
+  ©etˆzce.  Znak '*' nebude na za‡ tek, nebo na konec doplnˆn tak‚ pokud se
+  tam ji‘ nach z¡ znak '?'. Je-li pot©eba zadat na za‡ tku nebo na konci
+  mezeru, mus¡ se cel˜ ©etˆzec uzav©¡t do uvozovek, nebo apostrof–.
+  P©i vyhled v n¡ se nerozli¨uj¡ mal‚ a velk‚ p¡smena.
+  Kl vesou CTRL+G lze vyhledat dal¨¡ v˜skyt hledan‚ho ©etˆzce.
+
+  P©¡klad:  1) Zad n¡m ©etˆzce "v˜dej*banka" bude nalezen © dek, kter˜ obsahuje
+               slova "v˜dej" a "banka".  (stejnˆ jako "*v˜dej*banka*")
+            2) Zad n¡m ©etˆzce "P©¡jem*" bude nalezen © dek, kter˜ za‡¡n 
+               slovem "P©¡jem"
+            3) Zad n¡m ©etˆzce "*192.50" bude nalezen © dek, kter˜ kon‡¡
+               ©etˆzcem "192.50"
+            atd...
+
+- Umo‘¤uje ji‘ (kone‡nˆ) pojmenovat indexy (p©i F7) a z rove¤ ur‡it jejich
+  po©ad¡, p©¡padnˆ vylou‡it volbu "Net©¡dit"
+
+  Syntaxe: "{[-][!]tag [nazev],tag[.],tag...}"
+
+    zad n¡m '-' budou vybr ny v¨echny kromˆ tˆchto index– (nezmˆnˆno)
+    zad n¡m '!' nebude za©azena volba "Net©¡dit"
+    zad n¡m n zvu (za mezerou) bude tento n zev pou‘it v menu p©i F7
+        (m–‘e obsahovat '\<')
+    zad n¡m '.' na konci indexu bute vytvo©en n zev podle jm‚na indexu
+        tak ‘e prvn¡ znak bude velk˜ a ostatn¡ mal‚ (pak m–‘e jm‚no indexu
+        obsahovat '\<')
+
+  P©¡klad:
+    '{! D\<ATUM.,PRIJEM \<P©¡jem,VYDEJ \<V˜dej,\<DRUH.,SPZ,POZNAMKA P\<ozn mka}'
+
+
+
+
+        LIST_C.PRG  V 3.41
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Umo‘¤uje tisknout obsah LIST_C kl vesou F9 (p©¡padnˆ CTRL+F9).
+  Po stisku F9 se rozbal¡ okno s nastaven¡m pro tisk. Po potvrzen¡ tisku
+  se provede tisk na za©¡zen¡ nastaven‚ p©edt¡m p©¡kazem SET PRINT TO.
+
+
+
+
+        LIST_C.PRG  V 3.42
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Tisk lze p©eru¨it kl vesou ESC.
+
+- Parametr podprogramu LIST_C ur‡uj¡c¡ ‡¡slo barevn‚ho sch‚matu m–‘e b˜t
+  nyn¡ i ©etˆzec. Tento ©etˆzec m–‘e obsahovat buƒ definici barevn‚ho sch‚ma
+  (tak jak ji vrac¡ funkce SCHEME(n)), nebo seznam barev vybran˜ch z ur‡en‚ho
+  barevn‚ho sch‚ma.
+        P©¡klad:
+                DO list_c WITH -1,-1, 19, '8,1,7,9,7,6', " Prvn¡ p©¡klad ", ...
+
+        V definici '4,2,4,7,3,6' je prvn¡ ‡¡slo barevn‚ho sch‚ma (8) a n sleduj¡
+        ‡¡sla jednotliv˜ch barev tak jako by byly pou‘ity ve funkci SCHEME(8,n).
+
+        Barvy v t‚to definici jsou v po©ad¡:
+          'scheme, txt, title, head, border, select'
+
+          scheme    - ‡¡slo barevn‚ho sch‚matu               (impl. 4)
+          txt       - © dky menu (je-li zad na hodnota>0)    (impl. 2)
+          title     - nadpis r me‡ku                         (impl. 4)
+          head      - hlavi‡ka (popis sloupc–)               (impl. 7)
+          border    - r me‡ek                                (impl. 3)
+          select    - ukazatel                               (impl. 6)
+
+
+- Ve v˜‡tu index– lze ur‡it kter  definice © dku se m  automaticky p©epnout
+  p©i v˜bˆru tohoto indexu.
+
+  Syntaxe: "{[-][!] tag [=n] [nazev], tag[.][=n], tag...}"
+
+  =n  - ‡¡slo (n-t‚) definice © dku pro zadan˜ index.
+
+  P©¡klad:
+   ... '{DATUM., VYDEJ=1 V˜dej, DRUH.=1, POZNAMKA=2 Pozn mka}', ...
+
+
+
+
+        LIST_C.PRG  V 3.44
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- V parametrech podprogramu lze zadat "#P=soubor". Tento soubor bude pou‘it
+  p©i tisku pro ulo‘en¡ nastaven˜ch hodnot (v lev‚ ‡ sti dialogov‚ho okna
+  tisku). Ulo‘en‚ hodnoty se pou‘ij¡ p©i dal¨¡m tisku jako implicitn¡.
+  Lze tak‚ zadat "#P=(v˜raz)", v˜raz mus¡ obsahovat jm‚no souboru.
+  Implicitn¡ p©¡pona tohoto souboru je .LCP.
+  Podprogram LIST_C nevypisuje ohlednˆ tohoto souboru ‘ dn  chybov  hl ¨en¡,
+  je-li soubor nep©¡stupn˜, chybn˜, nebo je-li chybnˆ zadan‚ jeho jm‚no,
+  nebude se prov dˆt ukl d n¡ nastaven˜ch hodnot.
+
+  Definici #P lze tak‚ zadat pomoc¡ pole ON_LIST_C (nap©. pro v¨echny LIST_C
+  v programu).
+        p©¡klad:
+                DIME on_list_c[1]
+                on_list_c[1]='#P=("data\"+m.username)'
+        nebo:
+                DIME on_list_c[1]
+                on_list_c[1]='#P=preftisk.lcp'
+
+
+
+
+        LIST_C.PRG  V 3.46
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- P©i zmˆnˆ t©¡dˆn¡ (F7) v menu bude u "Net©¡dit" hork  kl vesa 'N',
+  pokud jsou hork‚ kl vesy definov ny a nen¡ 'N' definov no v jin‚ polo‘ce.
+
+- V parametrech podprogramu lze zadat "#SET=volby".
+  Volby:
+        K-  = Vypne maz n¡ bufferu kl vesnice po ka‘d‚m pohybu v menu
+        W-  = Vypne v˜pis "Pracuji ..." po dlouho trvaj¡c¡ operaci
+        P-  = Zak ‘e tisk pomoc¡ F9 (resp. CTRL+F9)
+        S-  = Zak ‘e posuv mezi definicemi © dk– pomoc¡ kurzorov˜ch ¨ipek
+        C-  = Nastav¡ (pouze pro LIST_C) SET CENTURY OFF
+        D-  = Nastav¡ (pouze pro LIST_C) SET DELETED OFF
+    Od verze V 3.47:
+        O+  = P©i v˜bˆru indexu (F7) lze ur‡it ASCENDING/DESCENDING
+        F-  = Z kaz vyhled v n¡ pomoc¡ kl ves
+
+    P©¡klad:   "#SET= K- W- P+ S+ C-"
+
+    (Je mo‘no zadat i do pole ON_LIST_C)
+
+- Je-li zad n nulov˜, nebo z porn˜ po‡et © dk– v LIST_C, bude tato hodnota
+  ch p na jako po‡et voln˜ch © dk– na obrazovce. Voln˜mi © dky se rozum¡
+  ty © dky, kter‚ nepokr˜v  LIST_C a jeho st¡n ani n povˆdn˜ © dek.
+
+
+
+
+        LIST_C.PRG  V 3.47
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Je mo‘no ur‡it smˆr t©¡dˆn¡ pro index datab ze (ASCENDING/DESCENDING):
+    a) Parametrem "#SET=O+" - V menu pro v˜bˆr t©¡dˆn¡ (F7) bude po
+       vybr n¡ indexu nab¡dnuto podmenu smˆru t©¡dˆn¡ "Vzestupnˆ" a "Sestupnˆ"
+       (Je mo‘no zadat i do pole ON_LIST_C pro v¨echny LISTy_C‚)
+    b) Ve v˜‡tu index– "{[-][!] tag [=n] [/A|D|?|N] [nazev], tag[.][=n], ...}"
+        /A = pouze ASCENDING
+        /D = pouze DESCENDING
+        /? = podmenu smˆru t©¡dˆn¡ "Vzestupnˆ" a "Sestupnˆ"
+        /N = nemˆnit smˆr t©¡dˆn¡
+       (toto nastaven¡ m  p©ednost p©ed volbou #SET=O+)
+
+- Ve v˜‡tu index– lze zak zat (povolit) p©ep¡na‡em /F[+|-] vyhled v n¡
+  pomoc¡ kl ves.
+
+    Syntaxe: "{[-][!] tag [=n] [/A|D|?|N] [/F[+|-]] [nazev], tag[.][=n], ...}"
+
+        /F a /F- zak ‘e vyhled v n¡
+        /F+ povol¡ vyhled v n¡ (pokud je nap©. #SET=F-)
+
+  Vyhled v n¡ lze tak‚ zak zat parametrem #SET=F- (nebo povolit #SET=F+)
+
+- V definici kl vesy lze m¡sto klasick‚ho p©¡kazu FoxPro pou‘¡t speci ln¡
+  p©¡kazy LIST_C:
+
+        #HELP           - N povˆda ovl d n¡             (norm lnˆ F1)
+        #EXIT           - Ukon‡en¡ LIST_C, m.Esc=.F.    (norm lnˆ ENTER)
+        #ESCAPE         - Ukon‡en¡ LIST_C, m.Esc=.T.    (norm lnˆ ESC)
+        #SORT           - Zmˆna t©¡dˆn¡                 (norm lnˆ F7)
+        #FIND           - Vyhled n¡ ©etˆzce znak–       (norm lnˆ ^F)
+        #FINDNEXT       - Vyhled n¡ dal¨¡ho             (norm lnˆ ^G)
+        #PRINT          - Tisk (ignoruje #SET=P-)       (norm lnˆ F9,^F9)
+        #SUM            - Sou‡et polo‘ek podle #SUM=
+        #FILTER         - Filtr datab ze podle #FILTER=
+        #FLT            - ---//---
+        #COLORSW        - Vypnut¡/Zapnut¡ barev © dk–   (norm lnˆ ^B)
+        #CSW            - ---//---
+
+        (Tyto p©¡kazy NELZE zad vat ve zkr cen‚ formˆ.)
+
+    p©¡klad:
+
+        'F5#: #SORT ## Zmˆna t©¡dˆn¡',;
+        'F7#: #FIND',;
+        'SHIFT+F7#: #FINDNEXT',;
+
+    implicitn¡ definice textu do n povˆdy je:
+        #EXIT        -  "V˜bˆr polo‘ky"
+        #ESCAPE      -  "Konec menu"
+        #SORT        -  "Zmˆna t©¡dˆn¡"
+        #FIND        -  "Hledat ©etˆzec"
+        #FINDNEXT    -  "Hledat dal¨¡"
+        #PRINT       -  "Tisk seznamu"
+        #SUM         -  "Sou‡et polo‘ek"
+        #FILTER      -  "Filtr datab ze"
+        #COLORSW     -  "Vypnut¡/Zapnut¡ barev © dk–"
+
+- Nˆkter‚ moduly byly p©esunuty z LIST_C do LIST_C2
+  Jsou to:
+        - Tiskov˜ modul (#PRINT)
+        - Sou‡tov˜ modul (#SUM)
+        - Filtrovac¡ modul (#FILTER)
+        - Modul anal˜zy chybn‚ definice © dku.
+
+  Pokud nen¡ LIST_C2.FXP ve stejn‚m adres ©i jako LIST_C nebudou tyto
+  moduly p©¡stupn‚ (LIST_C2 m–‘e b˜t v .APP spole‡nˆ s LIST_C)
+
+- Sou‡tov˜ modul.
+  Mus¡ b˜t definov no jeho spu¨tˆn¡ nˆjakou kl vesou ( nap©.  'F2#: #SUM')
+  Mus¡ b˜t definov ny v˜razy pro v˜po‡et:
+        '#SUM= text:v˜raz, text:v˜raz ...'
+
+        text  - text vypsan˜ na z vˆr v˜po‡tu k hodnotˆ v˜razu
+                (nesm¡ obsahovat znaky ':' a '=', slou‘¡ k oddˆlen¡
+                textu a v˜razu)
+        v˜raz - v˜raz definuj¡c¡ v˜slednou hodnotu. Aby bylo dosa‘eno
+                zpracov n¡ v¨ech z znam– v datab zi (s ohledem na filtr ap.)
+                mus¡ b˜t ve v˜razu nˆkter  z funkc¡:
+
+                        ++AVG(...)
+                        ++CNT()
+                        ++MAX(...)
+                        ++MIN(...)
+                        ++NPV(..., ..., ...)
+                        ++STD(...)
+                        ++SUM(...)
+                        ++VAR(...)
+
+                Funkce mus¡ za‡¡nat znaky '++' a jsou shodn‚ s funkcemi
+                v p©¡kazu CALCULATE.
+
+    P©¡klad:
+        ...,;
+        'F2#: #SUM',;
+        '#SUM= P©¡jmy:++sum(prijem), V˜daje:++sum(vydej), ';
+        +' Zisk:(++sum(prijem))-(++sum(vydej))'
+
+        Se‡te v¨echny polo‘ky PRIJEM a VYDEJ, vyp¡¨e p©¡jmy, v˜daje
+        a jejich rozd¡l jako zisk.
+
+- Filtrovac¡ modul.
+  Mus¡ b˜t definov no jeho spu¨tˆn¡ nˆjakou kl vesou ( nap©.  'F8#: #FILTER')
+  Mus¡ b˜t definov ny v˜razy pro v˜po‡et pomoc¡ #FILTER= nebo #FLT= :
+        '#FILTER= text:v˜raz, text:v˜raz ...'
+
+        text  - Text do menu, kter‚ se zobraz¡ po stisku ur‡en‚ kl vesy
+                (nesm¡ obsahovat znaky ':' a '=', slou‘¡ k oddˆlen¡
+                textu a v˜razu)
+        v˜raz - V˜raz pou‘it˜ pro filtr. Pokud je hodnota tohoto v˜razu
+                logick  bude beze zmˆny pou‘it pro filtr. Pokud je ale
+                hodnota tohoto v˜razu znakov , ‡¡seln , nebo datum, bude
+                po v˜bˆru tohoto filtru v menu zobrazeno dialogov‚ okno
+                pro doplnˆn¡ tohoto v˜razu oper tory a hodnotami u‘ivatelem.
+                Pokud je tento v˜raz znakov˜, nemˆl by obsahovat funkce
+                jeko nap©. TRIM(), proto‘e by program nemohl spr vnˆ zjistit
+                d‚lku ©etˆzce pro zad n¡ v dialogov‚m oknˆ.
+
+  Filtrov n¡ se prov d¡ tak ‘e se vezme pr vˆ nastaven˜ index (F7) a vytvo©¡
+  se nov˜ do‡asn˜ index s t¡mto filtrem. Z rove¤ tento nov˜ index zdˆd¡ filtr
+  p–vodn¡ho indexu (v‡etnˆ nastaven¡ SET FILTER, kter‚ bude tak‚ zahrnuto do
+  filtru nov‚ho indexu) a nastaven¡ ASCENDING/DESCENDING.
+  Do menu index– (F7) p©ibyde nov˜ index jeho‘ jm‚no se skl d  z p–vodn¡ho
+  jm‚na doplnˆn‚ho o znaky '&&' a podm¡nku zadan‚ho filtru.
+  Takto vytvo©en‚ indexy budou p©i ukon‡en¡ LIST_C automaticky vymaz ny.
+
+    P©¡klad:
+        ...,;
+        'F8#: #FILTER',;
+        '#FLT= P©¡jem:prijem, Datum:datum, Druh:alignl(druh), V˜dej:vydej>1000'
+
+- Definice akce p©ed stiskem a po stisku kl vesy:
+    #BEFKEY= p©¡kaz
+        - provede zadan˜ p©¡kaz v‘dy bezprost©ednˆ p©ed ‡ek n¡m na kl vesu
+    #AFTKEY= p©¡kaz
+        - provede zadan˜ p©¡kaz v‘dy bezprost©ednˆ po ‡ek n¡ na kl vesu
+
+    P©¡klad:
+        ...,;
+        '#BEFKEY= WAIT WIND "Record:"+str(recno()) NOWAIT'
+
+
+
+
+        LIST_C.PRG  V 3.48
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Metoda filtrov n¡ popsan  ve verzi 3.47 je upravena tak, ‘e nov˜ index
+  dˆd¡ pouze filtr origin ln¡ho indexu, bude tedy vytvo©en nov˜ filtr, nebo
+  p©i zad n¡ '[x] P©idat filtr' bude spojen s aktu ln¡m filtrem, co‘ znamen ,
+  ‘e nov˜ index zdˆd¡ cel˜ filtr aktu ln¡ho indexu a ne origin ln¡ho.
+
+- V menu filtru p©ibyla polo‘ka "Bez filtru", kter  je p©¡stupn  pokud je
+  aktu ln¡ index s filtrem. Tato volba zp–sob¡, ‘e bude vybr n origin ln¡
+  index, tedy index kter˜ byl aktu ln¡ p©i vytv ©en¡ indexu s filtrem, kter˜
+  je pr vˆ aktu ln¡.
+
+- Pokud je nastaveno SET DELETED ON nebude nov˜ index s filtrem obsahovat
+  smazan‚ z znamy. Do filtru bude automaticky p©id n v˜raz !DELETED()
+
+- P©i zad v n¡ hodnoty pro filtr bude pou‘ita hodnota z aktu ln¡ho z znamu
+  datab ze jako imlicitn¡. Pokud nem  b˜t pou‘ita ‘ dn  hodnota jako implicitn¡,
+  sta‡¡ aby byl v definici za v˜razem znak '~'. M -li b˜t pou‘ita jin 
+  implicitn¡ hodnota mus¡ b˜t za v˜razem v definici znak '~' a v˜raz ur‡uj¡c¡
+  novou imlicitn¡ hodnotu pro zad n¡ filtru.
+
+    P©¡klad:
+        ...,;
+        'F8#: #FILTER',;
+        '#FLT= P©¡jem:prijem, V˜dej:vydej~, Datum:datum~date()'
+
+
+
+
+        LIST_C.PRG  V 3.49
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- V menu filtru lze aktivovat polo‘ku "Bez filtru" tak‚ stiskem kl vesy,
+  kterou bylo vyvol no toto menu.
+
+
+
+
+        LIST_C.PRG  V 3.50
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Logick˜ filtr - p©id no:
+        [x] Obr tit podm¡nku
+        [x] P©idat filtr
+
+- žetˆzcov˜ filtr
+    - p©id no:
+        [x] Rozli¨ovat mal /velk 
+    - opraveno:
+        p©i zad n¡ oper toru <> a pr zdn‚ho ©etˆzce budou vyfiltrov ny
+        v¨echny z znamy jako NOT EMPTY()
+
+- Numerick˜ a datumov˜ filtr - p©id no: "nen¡ mezi"
+
+- Do sou‡t– (#SUM=) se automaticky p©id v  definice: "Po‡et z znam–:++CNT()"
+  (nen¡-li ji‘ jin  definice s ++CNT())
+
+- P©i tisku (F9) lze zadat i tisk sou‡t– a je-li zad n v˜bˆr jen ‡ sti z znam–,
+  lze tak‚ zadat zda se maj¡ vytisknout sou‡ty jen tisknut˜ch z znam–, nebo
+  v¨ech z znam– (samoz©ejmˆ s ohledem na filtry).
+        [x] Tisknout sou‡ty
+        [x] Sou‡ty v¨ech z znam–
+
+
+
+
+        LIST_C.PRG  V 3.51
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Roz¨¡©en¡ mo‘n˜ch parametr– z p–vodn¡ch 26 na 50
+        
+- Vkl d n¡ pol¡ do parametr– LIST_C
+
+    a) © dkov‚ definice:  ":@ pole1, pole2, pole3, pole4"
+        pole1 = definice © dk–    ":<v˜raz>"
+        pole2 = nadpisy           "/<text>", nebo "//<text>"
+        pole3 = barevn‚ sekvence  "|<k¢dy>"
+        pole4 = definice barev    "||<k¢d><p©¡znaky>=<v˜raz>"
+        (rozli¨ovac¡ znaky ':','/' a '|' nejsou povinn‚, vyj¡mkou je '//')
+        (pole2-4 nejsou povinn‚)
+        pole1-3 jsou p©eb¡r ny paralelnˆ a pole4 samostatnˆ
+
+    b) z kladn¡ definice: "@ pole1, ..."
+        vyjmenovan  pole budou za©azena mezi parametry LIST_C a vztahuj¡
+        se na nˆ stejn  pravidla jako na ostatn¡ parametry
+        (pole lze i vno©ovat)
+
+- Definice barev pro jednotliv‚ © dky
+
+    [:expr]
+    [/text] nebo [//text]
+    [|colors]
+
+  nap©.
+    [|1111111100000000022222222333333333300000000]
+  nebo
+    [|1       0        2.......3333333333--------]   (je to sam‚)
+
+  Znaky 0 a - jsou pro implicitn¡ barvu (pokud nejsou p©edefinov ny)
+  Znaky 1-9, A-Z jsou barvy definovan‚ program torem
+  Znaky '|³º' jsou pro barvu linek mezi sloupci (od verze 3.52)
+  Ostatn¡ znaky budou ignorov ny (resp. jako pokra‡ovac¡)
+
+  Definice barev:
+    "||<k¢d><p©¡znaky> = <v˜raz>"
+
+    <k¢d>       - K¢d barvy, znak 0-9 nebo A-Z (nerozli¨uje mal‚ a velk‚)
+    <p©¡znaky>  - S = 'Static' vyhodnotit v˜raz pouze na za‡ tku
+                  P = 'Paper' - povol¡ i barvu podkladu
+                  F = 'Flash' - povol¡ blik n¡ (pokud odpov¡d  hodnotˆ v˜razu)
+                  I = 'Ink' - zak ‘e barvu inkoustu
+    <v˜raz>     - V˜raz typu 'N', nebo 'C'. Je-li v˜raz typu 'N', bude toto
+                  ‡¡slo ch p no jako ‡¡slo barvy ve sch‚matu pro LIST_C.
+                  Je-li v˜raz typu 'C', mus¡ obsahovat platnou definici barvy.
+                  Pokud je hodnota v˜razu 0 nebo pr zdn˜ ©etˆzec, bude pou‘ita
+                  implicitn¡ barva
+    M¡sto oddˆlova‡e '=' lze pou‘¡t i ':' nebo jen mezeru
+
+  P©¡klad:
+
+    [||1S scheme(5,7)]          - barva 7 ze sch‚matu 5 (vyhodnoceno na za‡ tku)
+    [||2S: 3]                   - barva 3 z akt. sch‚m. (vyhodnoceno na za‡ tku)
+    [||3= iif(neco, 2, 'R')]    - podm¡nka vyhodnocovan  na ka‘d‚m © dku
+
+  Bude-li p©edefinov n k¢d barvy '0' bude pou‘it implicitnˆ tam kde nen¡
+  © dkov  definice '|...', toto lze vyu‘¡t k jednoduch‚ glob ln¡ devinici
+  pro celou aktu ln¡ definici LIST_C, tak ‘e lze nadefinovat pouze jedinou
+  definici '||0=<v˜raz>', kter  bude platit pro cel˜ © dek a pro v¨echny
+  © dkov‚ definice ':...' (kter‚ nemaj¡ definici '|...')
+
+  V LIST_C jsou implicitn¡ statick‚ definice tˆchto k¢d–:
+        n - ‡ern                     N - tmavo¨ed 
+        b - modr                     B - svˆtlemodr 
+        g - zelen                    G - svˆtlezelen 
+        c - modrozelen               C - svˆtlemodrozelen 
+        r - ‡erven                   R - svˆtle‡erven 
+        m - fialov                   M - svˆtlefialov 
+        y - hnˆd                     Y - ‘lut 
+        w - svˆtle¨ed                W - b¡l 
+
+  Na ‡ernob¡l‚m monitoru nebudou barevn‚ definice pou‘ity.
+  (rozpozn v n¡ monitoru: viz funkce _SAYC_MODE() v knihovnˆ FOXLIB)
+
+
+
+
+        LIST_C.PRG  V 3.52
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Parametr barvy LIST_C m–‘e b˜t:
+
+        '#1'  - Barvy p©ibli‘nˆ podle sch‚ma 1   (taky '#2')
+        '#4'  - Barvy p©ibli‘nˆ podle sch‚ma 4   (taky '#3')
+        '#5'  - Barvy p©ibli‘nˆ podle sch‚ma 5   (taky '#6')
+        '#7'  - Barvy p©ibli‘nˆ podle sch‚ma 7   (taky '#12')
+        '#8'  - Barvy p©ibli‘nˆ podle sch‚ma 8   (taky '#9')
+        '#15' - Barvy p©ibli‘nˆ podle sch‚ma 15
+
+        '#N'  - €ern         \
+        '#B'  - Modr          ³
+        '#G'  - Zelen         ³
+        '#C'  - Modrozelen     >  Nen¡ ovlivnˆno sch‚maty.
+        '#R'  - €erven        ³   Funguje spr vnˆ pouze s
+        '#M'  - Fialov        ³   p©¡slu¨nou verz¡ FOXLIB
+        '#Y'  - Hnˆd          ³
+        '#W'  - B¡l          /
+
+
+
+
+        LIST_C.PRG  V 3.54
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- P©i vkl dn¡ pol¡ do parametr– LIST_C pomoc¡ znaku '@' budou tato
+  pole bezprost©ednˆ po pou‘it¡ odstranˆna z pamˆti. Tomu lze p©¡padnˆ
+  zabr nit pou‘¡t¡m znaku '+' za znakem '@' (tedy "@+ pole1,..." 
+  nebo ":@+ pole1, pole2, pole3, pole4")
+
+- Lze definovat do‡asn‚ indexy '#IDX=pole', kter‚ budou vytvo©eny
+  v okam‘iku prvn¡ho v˜bˆru v menu index– (F7) a zru¨eny p©i odchodu
+  z LIST_C.
+
+    P©¡klad definice pole:
+        DIME lix[2]
+        lix[1]="Ulice: cs(ulice)"
+        lix[2]="\<PS€: psc"
+        
+  POZOR!
+    P©i definici indexu slo‘en˜m v˜razem
+      p©¡klad: lix[3]="Celkem:cena*pocet"
+    je nutno tento v˜raz zaokrouhlit
+      p©¡klad: lix[3]="Celkem:round(cena*pocet,2)"
+    jinak m–‘e doj¡t k nestabiln¡mu set©¡zen¡ z znam–
+
+
+- Je-li zad no '#IDX=pole, expL' bude logick˜ v˜raz expL pou‘it u ka‘d‚ho
+  z tˆchto index– pro filtr (INDEX ON ... FOR expL)
+
+- Menu v˜bˆru index– (F7) lze tak‚ vyvolat kl vesou TAB (nen¡-li 
+  p©edefinovan ). Pokud je toto menu vyvol no kl vesou TAB bude ukazatel
+  st t v‘dy na prvn¡ polo‘ce a kl vesa TAB bude pou‘ita pro pohyb smˆrem
+  dol–.
+
+
+
+
+        LIST_C.PRG  V 3.55
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Nov‚ volby v parametru #SET:
+    B+  = Definice podkladu barvy © dku bude uplatnˆna i p©ez ukazatel
+    A-  = Okno LIST_C bude bez st¡nu
+
+- Pokud je v¡ce © dkov˜ch definic (":<expC>"), kl vesy CTRL+LEFTARROW
+  a CTRL+RIGHTARROW p©ep¡naj¡ na prvn¡ a posledn¡ (doposud se dalo p©ep¡nat
+  pouze po jedn‚ kl vesami LEFTARROW a RIGHTARROW)
+
+- Promˆnn  LC_Y_LAST = Y-sou©adnice posledn¡ho zobrazen‚ho © dku z datab ze
+  v oknˆ LIST_C (relativnˆ k cel‚ obrazovce)
+
+- Definice timeoutu, tj. po uplynut¡ zadan‚ doby od posledn¡ho stisku
+  libovoln‚ kl vesy se provede zadan  akce.
+  Syntaxe parametru: "#TIMEOUT= sec. [, p©¡kaz]"
+  Nen¡-li zad n p©¡kaz provede se stisk kl vesy ESC.
+      p©¡klady:
+          "#TIMEOUT=5"                  - po 5s. stiskne ESC
+          "#TIMEOUT=.5, RefScr=.T."     - obnovov n¡ obrazovky po 1/2s.
+          "#TIMEOUT=4, DO myproc"       - po 4s. spust¡ MYPROC
+          "#TIMEOUT=3, k=einkeyc('F1')" - po 3s. stiskne F1
+        (samoz©ejmˆ lze definovat pouze jeden TIMEOUT)
+
+
+
+
+        LIST_C.PRG  V 3.56
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+- Parametry definic oken LIST_C:
+   "#WLIST= okno"
+        - Jm‚no okna pro LIST_C (ulo‘¡ se do promˆnn‚ LIST_WND), pokud
+          ji‘ okno tohoto jm‚na existuje, bude zru¨eno.
+   "#WHLN= okno"
+        - Jm‚no okna pro © dek n povˆdy (ulo‘¡ se do promˆnn‚ HLN_WND),
+          pokud je definov n © dek n povˆdy a okno tohoto jm‚na ji‘ existuje,
+          bude zru¨eno. Tato definice mus¡ b˜t um¡stˆna p©ed definic¡ © dku
+          n povˆdy, jinak se neuplatn¡.
+   "#SAVWND"
+        - Po ukon‡en¡ LIST_C z–stane okno na obrazovce
+   "#SAVHLN"
+        - Po ukon‡en¡ LIST_C z–stane okno © dku n povˆdy na obrazovce

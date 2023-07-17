@@ -1,0 +1,17 @@
+PATH=D:\EKONTLad;D:\EKONTLad\DATA;D:\EKONTLad\PPRG;C:\FPD26L
+DATA=D:\EKONTLad\DATA\
+GL_USERREM=""
+
+DefLadeni=.T.
+
+* Z kladn¡ cena pro pl tce DPH
+DSazbaZD        =900
+* Z kladn¡ cena pro nepl tce DPH
+DSazbaZB        =900
+* Z kladn¡ cena pro vnitropodnikov‚ £‡etnictv¡
+DSazbaVPU        =1000
+* Sazba za polo‘ky a kolik polo‘ek
+DSazbaP	= 400
+DSazbaPP=  25
+
+MenuCM="EUR,USD,CHF"

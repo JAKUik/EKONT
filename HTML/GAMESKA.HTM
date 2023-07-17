@@ -1,0 +1,142 @@
+<html> <head> <style> td {width: 7mm; height: 7mm; border: 1px solid; font-family: Verdana; font-size: 8pt} body {font-family: Verdana; font-size: 8pt} </style><script>
+      var radek,taj1,taj2,taj3,taj4,taj5,barvy;
+      var poslRadek="rad10";
+
+      function Taj(b,o){
+        this.barva=b;
+        this.obsaz=o;
+      }
+            
+      function myGame(obj){
+        with (obj){
+          if (parentNode.id!=radek) return;
+          with (style){
+            if (background==barvy[0]){background=barvy[1]; return;};
+            if (background==barvy[1]){background=barvy[2]; return;};
+            if (background==barvy[2]){background=barvy[3]; return;};
+            if (background==barvy[3]){background=barvy[4]; return;};
+            if (background==barvy[4]){background=barvy[0]; return;};
+          }  
+        }  
+      }
+
+      function myMouseGame(obj){
+        if (obj.parentNode.id==radek) obj.style.cursor="hand"; else obj.style.cursor="text";
+      }
+
+      function myMouseOK(obj){
+        if (obj.parentNode.id==radek) obj.style.cursor="hand"; else obj.style.cursor="";
+      }
+
+      function myOK(obj){
+        var nextS;vyslKolo="";
+
+        with (obj.parentNode){
+          if (id!=radek) return;
+          isKomplet=true;
+          radek=radek.substring(0,3)+(name*1+1);
+          nextS=previousSibling;
+          vyslKolo=jednoKolo(obj.parentNode);
+          if (vyslKolo==" g g g g g "){
+            obj.innerText="výbornì";
+            obj.style.fontWeight="bold";
+            obj.style.color="red";
+            ukazTaj();
+            stat.innerText="chci novou hru";
+          }  
+          else{
+            if (id==poslRadek){
+              ukazTaj();
+              stat.innerText="";
+              alert("Prohrál!");
+              stat.innerText="chci novou hru";
+            }
+            else{  
+              if (nextS.id=="konec") return;
+              nextS.lastChild.innerText="potvrdit øádek";
+              obj.style.fontFamily="Webdings";
+              obj.style.textAlign="left";
+              obj.innerText=vyslKolo;
+            }  
+          }
+        }  
+      }
+
+      function initPgm(){
+        with (document.all){
+          for (var i=0; i<length; i++){
+            if (item(i).id.indexOf("game")==0){
+              item(i).onclick=new Function("myGame(this);");
+              item(i).onmouseover=new Function("myMouseGame(this)");
+              item(i).style.background="white";
+            }
+            if (item(i).id.indexOf("rad")==0){
+              item(i).isKomplet=false;
+            }
+            if (item(i).id=="ok"){
+              item(i).onclick=new Function("myOK(this)");
+              item(i).onmouseover=new Function("myMouseOK(this)");
+            }
+          }
+        }
+        barvy=new Array("white","red","blue","green","yellow");
+        radek="rad1";
+        genNewTaj();
+      }
+      
+      function novaHra(obj){
+        if (obj.innerText=="vzdát se"){
+          ukazTaj();
+          obj.innerText="chci novou hru";
+        }
+        else{
+          self.location="gameska.htm";
+        }
+      }
+      
+      function genNewTaj(){
+        var poc;
+        
+        poc=barvy.length-1;
+        taj1=new Taj(barvy[Math.round(Math.random()*poc)],false);
+        taj2=new Taj(barvy[Math.round(Math.random()*poc)],false);
+        taj3=new Taj(barvy[Math.round(Math.random()*poc)],false);
+        taj4=new Taj(barvy[Math.round(Math.random()*poc)],false);
+        taj5=new Taj(barvy[Math.round(Math.random()*poc)],false);
+      }
+      
+      function ukazTaj(){
+        tdtaj1.style.background=taj1.barva;
+        tdtaj2.style.background=taj2.barva;
+        tdtaj3.style.background=taj3.barva;
+        tdtaj4.style.background=taj4.barva;
+        tdtaj5.style.background=taj5.barva;
+      }
+      
+      function jednoKolo(obj){
+        var s=" ";
+             
+        with (obj){
+          for (var i=1; i<=5; i++){eval("taj"+i+".obsaz=false"); childNodes(i-1).obsaz=false;}
+          for (var i=1; i<=5; i++){
+            if ((childNodes(i-1).style.background==eval("taj"+i+".barva"))){
+              eval("taj"+i+".obsaz=true");
+              childNodes(i-1).obsaz=true;
+              s+="g "; 
+            }
+          }
+          // prùchod tajenkou
+          for (var i=1; i<=5; i++){
+            // prùchod td
+            for (var j=0; j<=4; j++){
+              if (!eval("taj"+i+".obsaz") && !childNodes(j).obsaz && (eval("taj"+i+".barva")==childNodes(j).style.background)){
+                eval("taj"+i+".obsaz=true");
+                childNodes(j).obsaz=true;
+                s+="c ";
+              }
+            }
+          }
+        }  
+        return s;
+      }
+    </script> </head> <body onLoad="initPgm()"> <table> <tr id="tajenka"> <td id="tdtaj1">&nbsp;</td> <td id="tdtaj2">&nbsp;</td> <td id="tdtaj3">&nbsp;</td> <td id="tdtaj4">&nbsp;</td> <td id="tdtaj5">&nbsp;</td> <td id="stat" style="width: 30mm; border: 3pt solid; text-align: center; font-weight: bold; cursor: hand" onClick="novaHra(this)">vzdát se</td> </tr> <tr id="konec"> <td style="height: 1mm; border: 0pt" colspan="6"></td> </tr> <tr id="rad10" name="10"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad9" name="9"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad8" name="8"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad7" name="7"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad6" name="6"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad5" name="5"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad4" name="4"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad3" name="3"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad2" name="2"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">&nbsp;</td> </tr> <tr id="rad1" name="1"> <td id="game1">&nbsp;</td> <td id="game2">&nbsp;</td> <td id="game3">&nbsp;</td> <td id="game4">&nbsp;</td> <td id="game5">&nbsp;</td> <td id="ok" style="width: 30mm; text-align: center; border: 2pt solid">potvrdit øádek</td> </tr> </table> <p> Známá hra MasterMind (Logik). Cílem je uhádnout barvy v pìti políèkách (pøipraví poèítaè). Barvy doplòujete do políèek v øádku oznaèeném <b>potvrdit øádek</b> opakovaným kliknutím levého tlaèítka myši. Barvy se mìní v poøadí: bílá&nbsp;&nbsp;<span style="background: red">&nbsp;&nbsp;</span> <span style="background: blue">&nbsp;&nbsp;</span> <span style="background: green">&nbsp;&nbsp;</span> <span style="background: yellow">&nbsp;&nbsp;</span>. Svoji volbu potvrdíte tlaèítkem <b>potvrdit øádek</b>. Poèítaè každý tah vyhodnotí. Za správnou barvu na správném místì pøidìlí <span style="font-family: Webdings">g</span>, za správnou barvu na špatném místì <span style="font-family: Webdings">c</span> a za špatnou barvu "nic". V každé høe máte 10 pokusù. Jedna barva mùže být v jednom øádku víckrát. Pøejeme Vám pìknou pohodu u kávy. </p> </body> <html>

@@ -1,0 +1,19 @@
+        Zkratky RCOMM
+        컴컴컴컴컴컴�
+
+Q       - QUIT
+CLS     - CLEAR
+U       - USE ?
+U ...   - USE ...
+S       - SELECT   (menu)
+S0      - SELECT 0
+S ...   - SELECT ...
+B       - BROWSE
+B ...   - BROWSE ...
+F       - SET FILTER TO
+F ...   - SET FILTER TO ...
+O       - SET ORDER TO
+O ...   - SET ORDER TO ...
+L ...   - LOCATE ALL FOR ...
+C       - CONTINUE
+

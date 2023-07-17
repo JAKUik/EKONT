@@ -1,0 +1,10 @@
+WAIT WIND "Zacatek"
+[]
+Procedura PPP
+[]
+{oblast1}
+WAIT WIND "Oblast 1"
+{oblast2}
+WAIT WIND "Oblast 2"
+{}
+WAIT WIND "Konec INI file"

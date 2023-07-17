@@ -1,0 +1,20 @@
+
+Structure for database: D:\EKONTLAD\DATA\ANDY\UFAKTURY.DBF
+Number of data records:      33
+Date of last update   : 18.05.04
+Code Page             : 0
+Field  Field Name  Type       Width    Dec    Index  Collate
+    1  TYP         Numeric        3                  
+    2  CIS         Numeric        5                  
+    3  UCT         Numeric        3                  
+    4  ANA         Numeric        5                  
+    5  VYS         Date           8                  
+    6  SPL         Date           8                  
+    7  ZAP         Date           8                  
+    8  VAR         Character     12            Asc   Machine
+    9  CAS         Numeric       14      2     Asc   Machine
+   10  KOS         Character      1                  
+   11  CASCM       Numeric       12      2           
+   12  MENA        Character      3                  
+   13  KURZ        Numeric       12      4           
+** Total **                      95

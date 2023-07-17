@@ -1,0 +1,276 @@
+
+<public:attach event="onload" for="window" onevent="initReport(); overFld();"/>
+<public:method name="getFld" />
+<public:method name="getCtl" />
+<public:method name="getPage" />
+<public:method name="getNode" />
+<public:method name="getRecNo" />
+
+<script>
+var dvOld,afterDvOld,tbOld,tb,iSub,hMax,pgBrk,ctlNms,isDH;
+var rs,dtypes,rp_page,rp_n,rp_node,rp_ctl;
+
+//-my functions-----------------------------------
+// kontrola pøeteèení údaje a zpøístupnìní editace
+// kontrolují a nastavují se jen <td> s id="dta"
+function overFld(){
+  var l,td;
+  var err=0;
+  // zapamatovat si pùvodní text, innerText vyprázdnit
+  td=window.document.all("dta");
+  if (td!=null){
+    l=td.length;
+    for (var i=0; i<l; i++){
+      td[i].oldText=td[i].innerText;
+      td[i].innerText="";
+    }
+    // porovnat vıšku plného a prázdného pole <td>
+    for (var i=0; i<l; i++){
+      td[i].h_nic=td[i].offsetHeight;
+      td[i].innerText=td[i].oldText;
+      td[i].h_txt=td[i].offsetHeight;
+      td[i].innerText="";
+      if (td[i].h_txt>td[i].h_nic){
+        td[i].style.background="aqua";
+        err++;
+      }
+    }
+    // pro <td> s id="dta" nastaví ovladaè onclick na editaci údaje
+    // a vrátí pùvodní obsah
+    for (var i=0; i<l; i++){
+      td[i].innerText=td[i].oldText;
+      td[i].style.cursor="hand";
+      td[i].onclick=new Function("var s=prompt('Opravte (doplòte) údaj:',this.innerText); if (s!=null) this.innerText=(s=='')? ' ': s; if (this.offsetHeight<=+this.h_nic) this.style.background='white'; else this.style.background='aqua';");
+    }
+    // zprava s chybami
+    if (err>0) alert("POZOR: Modøe oznaèené údaje ("+err+") jsou pøíliš dlouhé. V programu úèto\n"+
+                     "je zkrate a vytvoøte formuláø znovu!\n\n"+
+                     "TIP: Myší ukate na modrı údaj, kliknìte a v následujícím dialogu\n"+
+                     "zadejte novou hodnotu. UPOZORNÌNÍ: Tato úprava je doèasná, nové\n"+
+                     "naètení stránky vrátí pùvodní hodnoty pøedané z programu úèto!");
+  }
+}
+//-end my functions-------------------------------
+
+function getFld(nm) { 
+ var s=rs.fields(nm).value,t=dtypes[nm],v,msk; if (s==null) return null; 
+ if (t=="D"||t=="T"||t=="Q") try { msk="yyyy-MM-dd HH:mm:ss.SSS"; if (t=="T") msk="HH:mm:ss.SSS";
+  v=_jf.parseD(s,msk); } catch(e){ v=null; }
+ else if (t=="P"||t=="F"||t=="R") { v=parseFloat(s); if (v==Number.NaN) v=null; } else 
+ if (t=="B") v=(s=="1"||s=="true"||s=="yes")?true:(s=="0"||s=="false"||s=="no")?false:null; 
+ else v=s; //"S" or recordset 
+ return v; 
+}
+function getCtl(nm) { return rp_ctl[nm]; }
+function getPage() { return rp_page; }
+function getNode() { return rp_node; }
+function getRecNo() { return rp_n; }
+function doCall(nm) { 
+ try { var f=eval(tbOld.id+"_"+nm); f(); } catch(e) {} 
+}
+function errMsg(s) { alert("report "+tbOld.id+" "+s); }
+function isRSFld(nm) { var i,l=rs.fields.count; 
+  for (i=0;i<l;i++) if (nm==rs.fields(i).Name) return true; return false; }
+function setDataXX(el,p,xx) {
+  var s,expr=el.getAttribute(xx+"data"); if (expr!=null) { p.removeAttribute(xx+"data");
+  try { rp_node=p; s=eval(expr);
+    if (xx=="href") p.href=s; else if (xx=="value") p.value=s; else p.innerHTML=s; }
+  catch(e) { el.setAttribute(xx+"data",null); errMsg(xx+"data="+expr+"\n error in expression"); } }
+}
+function cloneFill(el) {
+ var p,s,f,expr; p=el.cloneNode(false); if (el.nodeType==3) return p; 
+ var sub=el.getAttribute("sub"); if (sub!=null) {
+   setDataXX(el,p,"href"); setDataXX(el,p,"value"); setDataXX(el,p,"");
+   var tb1=tb,tbOld1=tbOld,hMax1=hMax; tb=p; tbOld=el; hMax=10000000;
+   p.removeAttribute("rs"); p.removeAttribute("ctl");
+   p.removeAttribute("id"); p.removeAttribute("sub"); subRprt(sub,el);
+   tb=tb1; tbOld=tbOld1; hMax=hMax1; return p; }
+ var nn=el.childNodes,l=nn.length,i,q;
+ for (i=0;i<l;i++) { q=cloneFill(nn.item(i)); p.appendChild(q); }
+ setDataXX(el,p,"href"); setDataXX(el,p,"value"); setDataXX(el,p,"");
+ s=el.getAttribute("ini"); if (s!=null) {
+   f=eval("init_"+s); f(el,p); try { f=eval("bind_"+s); expr=el.getAttribute("fdata");
+   if (f!=null&&expr!=null) { v=eval(expr); f(el,p,v); } } catch(e){} }
+ return p;
+}
+function findTypAll(nm) {
+ var nn=tbOld.children,l=nn.length,i,b,j=0,arr=new Array(),expr; for (i=0;i<l;i++) {
+   b=nn.item(i); if (b.nodeName!="COLGROUP" && b.getAttribute("typ")==nm) {
+    expr=b.getAttribute("if"); if (expr!=null) try { if (!eval(expr)) continue; } catch(e) { 
+      el.setAttribute("if","false"); errMsg("if="+expr+"\n error in expression"); } 
+    arr[j++]=b; } } return arr;
+}
+function findTypSingle(nm) {
+ var nn=tbOld.children,l=nn.length,i,b; for (i=0;i<l;i++) {
+   b=nn.item(i); if (b.nodeName!="COLGROUP" && b.getAttribute("typ")==nm) return b; } return null;
+}
+function newPage() { 
+ rp_page++; var d=dvOld.cloneNode(false); var cNms=dvOld.className.split(" "),s="",i,l=cNms.length;
+ for (i=0;i<l;i++) if (cNms[i]!="jf_report") { if (s!="") s+=" "; s+=cNms[i]; }
+ d.className=s; tb=tbOld.cloneNode(false); tb.removeAttribute("rs");
+ tb.removeAttribute("id"); tb.removeAttribute("ctl"); tb.removeAttribute("dso");
+ if (tbOld.children.length>0) { var x=tbOld.children(0); 
+  if (x.nodeName=="COLGROUP") tb.appendChild(x.cloneNode(true)); }
+ d.appendChild(tb); dvOld.parentNode.insertBefore(d,afterDvOld); d.style.visibility="visible";
+}
+function addPH() { doCall("ph"); addNoChk(findTypAll("ph")); isDH=true; }
+function addPF() {
+ var h=hMax-tb.offsetHeight,pf=findTypAll("pf"); 
+ if (h>0 && pf.length>0) { var b,r,d,cc,c,i,j,m,n,lR,lC,nCols=0;
+  lR=tb.rows.length; for (i=0;i<lR;i++) { n=0; cc=tb.rows(i).cells; lC=cc.length;
+   for (j=0;j<lC;j++) { m=cc(j).colSpan; if (m!=null) n+=m; else n++; } if (n>nCols) nCols=n; } 
+  b=document.createElement("tbody"); r=document.createElement("tr"); d=document.createElement("td");
+  d.style.height=h+"px"; d.colSpan=nCols; r.appendChild(d); b.appendChild(r); tb.appendChild(b); }
+ addNoChk(findTypAll("pf")); doCall("pf");
+}
+function newPagePfPh() { addPF(); newPage(); addPH(); }
+function getTagType(tag) {
+ if (tag=="BR") return 0;
+ if (tag=="P"||tag=="DIV"||tag=="PRE"||tag=="H1"||tag=="H2"||tag=="H3"||tag=="H4"||
+     tag=="H5"||tag=="H6"||tag=="TABLE"||tag=="BLOCKQUOTE") return 1; 
+ if (tag=="UL"||tag=="OL") return 2; if (tag=="DL") return 3; return -1;
+}
+function fillList(c,nn,isDL,chk) {
+ var nd=nn[0],nd1=nd.cloneNode(false),l=nd.childNodes.length,j; 
+ c.appendChild(nd1); while (l>0) { var x=null,y=null,x1,y1,z=nd.childNodes(0);
+  if (!isDL||z.nodeName!="DD") { x=z; x1=z.cloneNode(true); l--; nd1.appendChild(x1); }
+  if (l>0 && isDL) { z=nd.childNodes(0); 
+    if (z.nodeName=="DD") { y=z; y1=z.cloneNode(true); l--; nd1.appendChild(y1); } } 
+  if (chk && tb.offsetHeight>hMax) {
+    if (x!=null) nd1.removeChild(x1); if (y!=null) nd1.removeChild(y1);
+    if (nd.nodeName=="OL") { l=nd.start; if (l==null) l=1; l+=nd1.children.length; nd.start=l; }
+    if (nd1.childNodes.length==0) c.removeChild(nd1); return false; }
+  if (x!=null) nd.removeChild(x); if (y!=null) nd.removeChild(y); chk=true; }
+ l=nn.length; for (j=1;j<l;j++) nn[j-1]=nn[j]; nn.length=l-1; return true;
+}
+function fillCols(cc,iArr,nnArr,chk) {
+ var arrEmpty=true,sz=iArr.length,i;  
+ for (i=0;i<sz;i++) { var nn=nnArr[i],c=cc(iArr[i]),tag,j,n,l,k,bChk=chk; 
+_0:while (true) { l=nn.length; if (l==0) break; tag=getTagType(nn[0].nodeName); n=1;
+    if (tag>=2) if (fillList(c,nn,(tag==3),bChk)) continue; else { arrEmpty=false; break; } 
+    if (tag<0) for (;n<l;n++) { tag=getTagType(nn[n].nodeName); 
+      if (tag>=0) { if (tag==0) n++; break; } }   
+    for (j=0;j<n;j++) { c.appendChild(nn[j]); if (bChk && tb.offsetHeight>hMax) {
+      k=c.childNodes.length; for (;j>=0;j--) c.removeChild(c.childNodes(--k)); 
+      arrEmpty=false; break _0; } }
+    for (j=n;j<l;j++) nn[j-n]=nn[j]; nn.length=l-n; bChk=true; } }
+ return arrEmpty;    
+}
+function trySplit(b) {
+ var l,r,c,cc,iArr,nnArr,i,sz=0;   l=b.rows.length; if (l==0) return false;
+ r=b.rows(l-1); cc=r.cells; l=cc.length;  
+ for (i=0;i<l;i++) { c=cc(i); if ((c.txt==""||c.txt=="true")&&c.children.length>0) { 
+   if (sz==0) iArr=new Array(); iArr[sz++]=i; } }
+ if (sz==0) return false; 
+ for (i=0;i<l;i++) { c=cc(i); c.style.width=c.offsetWidth+"px"; } 
+ nnArr=new Array(sz); for (i=0;i<sz;i++) { c=cc(iArr[i]); var xx=c.childNodes,j,lX=xx.length,
+   nn=new Array(l); for (j=0;j<lX;j++) nn[j]=xx[j].cloneNode(true); nnArr[i]=nn; c.innerHTML="";}
+ var frst=true; while (!fillCols(cc,iArr,nnArr,false)) {
+   if (tb.offsetHeight>hMax && frst) { moveToNxtPg(b); 
+     if (fillCols(cc,iArr,nnArr,true)) return true; }
+   newPagePfPh(); b=b.cloneNode(false); r=r.cloneNode(false); b.appendChild(r); 
+   for(i=0;i<l;i++) { c=cc(i); r.appendChild(c.cloneNode(false)); } tb.appendChild(b);
+   cc=r.cells; frst=false; } 
+ return true;
+}
+function moveToNxtPg(b) {
+ var i,l=0,arr=new Array(),p; 
+ for(;;b=p) { p=b.previousSibling; tb.removeChild(b); arr[l++]=b;
+   if (p==null||b.pb!="false"&&p.pa!="false") break; }
+ newPagePfPh(); for (i=l-1;i>=0;i--) tb.appendChild(arr[i]); 
+}
+function check() {
+ if (tb.offsetHeight>hMax) { var b=tb.lastChild; if (!trySplit(b)) moveToNxtPg(b); }
+}
+function addSingle(bOld) {
+ var sub=bOld.getAttribute("sub");if (sub!=null) { subRprt(sub,bOld); return; }
+ var b=cloneFill(bOld); b.removeAttribute("typ"); b.removeAttribute("if"); tb.appendChild(b); 
+}
+function addNoChk(arr) {
+ var b,i,l=arr.length; for (i=0;i<l;i++) addSingle(arr[i]); }
+function addChk(arr) {
+ var b,i,l=arr.length; for (i=0;i<l;i++) { b=arr[i];
+   if (pgBrk||b.pb==""||b.pb=="true") newPagePfPh(); pgBrk=(b.pa==""||b.pa=="true"); 
+   addSingle(b); check(); }
+}
+function ctlHeads(i) {
+ var nm,l=ctlNms.length; for (;i<l;i++) { nm=ctlNms[i]; rp_ctl[nm]=rs(nm).value+"";//new instance  
+  nm="ch"+iSub+"_"+nm; doCall(nm); addChk(findTypAll(nm)); isDH=true; }
+}
+function ctlFoots(i) {
+ var nm,j,l=ctlNms.length; for (j=l-1;j>=i;j--) { nm=ctlNms[j]; 
+  nm="cf"+iSub+"_"+nm; addChk(findTypAll(nm)); doCall(nm); }
+}
+function rsOpen(el) {
+ try { rs=eval(el.getAttribute("rs")); rs.MoveFirst(); rp_n=1; dtypes=rdDTypes(el); return true; 
+ } catch(e) { 
+  alert("hlaseni Windows:\n"+e.description);
+  alert("Sestava "+tbOld.id+"\nchyba pøi ètení vstupního souboru"); return false; }
+}
+function ctlLogic() {   
+ var i,n=ctlNms.length,l=rs.Fields.Count,nm,arr;
+_0: for (i=0;i<n;i++) { nm=ctlNms[i];
+   for(j=0;j<l;j++) if (rs.Fields(j).Name==nm) continue _0; 
+   errMsg("ctl='"+nm+"' isn't a field name"); }
+ ctlHeads(0); while (!rs.EOF) {
+   l=ctlNms.length; for (i=0;i<l;i++) { nm=ctlNms[i]; 
+     if (rp_ctl[nm]!=rs(nm).value) { ctlFoots(i); ctlHeads(i); break; } }
+   nm="de"+iSub; arr=findTypAll(nm); 
+   if (isDH && arr.length>0) { addChk(findTypAll("dh"+iSub)); isDH=false; }
+   addChk(arr); doCall(nm); rs.MoveNext(); rp_n++; }
+ ctlFoots(0); 
+}
+function subRprt(sub,el) {
+ var s,rs1=rs,ctlNms1=ctlNms,ctl1=rp_ctl,iSub1=iSub,n1=rp_n,dtypes1=dtypes;
+ if (rsOpen(el)&&!rs.EOF) { iSub=sub; s=el.getAttribute("ctl");
+   ctlNms=(s==null)?new Array():s.split(","); rp_ctl=new Array(); ctlLogic(); }
+ rs=rs1; ctlNms=ctlNms1; rp_ctl=ctl1; iSub=iSub1; rp_n=n1; dtypes=dtypes1;
+}
+function rdDTypes(el) {
+  var a=new Array(),s=el.getAttribute("dtypes"),dd; if (s!=null) {
+   var dd=s.split(";"),i,l=dd.length; for (i=0;i<l;i++) { s=dd[i]; j=s.indexOf(":"); 
+    if (j<=0) { errMsg("dtypes=..\nsyntax error"); continue; }  var t,nm=s.substring(0,j);
+    if (!isRSFld(nm)) { errMsg("dtypes=..\n"+nm+" not in rs"); continue; } t=s.substring(j+1);
+    if (t!="S"&&t!="B"&&t!="F"&&t!="R"&&t!="D"&&t!="T"&&t!="Q"&&t!="P") {
+     errMsg("dtypes=..\n"+t+" is not a type(SBFRDTQP)"); continue; } a[nm]=t; } }
+  return a; 
+}
+function getIEVer() {
+ var ua=window.navigator.userAgent; var msie=ua.indexOf("MSIE");
+ if (msie<=0 || window.navigator.platform!="Win32") return 0;
+ return parseInt(ua.substring(msie+5,ua.indexOf(".", msie)));
+}
+function initReport() {
+ if (getIEVer()<5) { alert("Sestava vyaduje Inernet Explorer verze 5.0 a vyšší."); return; }
+ element.style.visibility="hidden"; 
+ dvOld=element; tbOld=dvOld.children(0); afterDvOld=dvOld.nextSibling;
+ pgBrk=false; rp_page=0; iSub=""; isDH=true;
+ tb=null; rs=null; ctlNms=new Array(); rp_ctl=new Array();
+ if (!rsOpen(tbOld)) return; 
+ if (!rs.EOF) { var s=tbOld.getAttribute("ctl"); if (s!=null) ctlNms=s.split(","); 
+  hMax=0; var el=findTypSingle("pf"); if (el!=null) hMax=-el.offsetHeight;
+  dvOld.removeChild(tbOld); hMax+=dvOld.offsetHeight;
+  newPage();
+  doCall("rh"); var rh=findTypAll("rh"),l=rh.length; if (l>0) { 
+   addNoChk(rh); if (rh[l-1].pa==""||rh[l-1].pa=="true") newPage(); } 
+  addPH(); 
+  ctlLogic();
+  var rf=findTypAll("rf"); l=rf.length; if (l==0) addPF(); else    
+   if (rf[0].pb==""||rf[0].pb=="true") { addPF(); newPage(); addNoChk(rf); }
+   else { addChk(rf); addPF(); }
+  doCall("rf"); }
+ dvOld.parentNode.removeChild(dvOld);
+}
+//------------------------------------------------------------------------------------------------
+// div class=jf_report
+// table   rs="expr"   dtypes="fldNm:S|B|F|R|D|T|Q|P;..."  ctl="fld1,fld2" 
+// col's  mit min-width
+// tbody  if="..."  typ="ch[2]_fld1".. (2==sub)  pb|pa[=true|false]   td.txt[=true]
+//        pf sollte kein oder genau 1 (h von erstem bestimmt Seitenwechsel)
+// tbody  typ=XX  sub="2"  rs="expr"  ctl="fld1,fld2"   (substituiert,subreport)
+// tag [href|value]data=expr                in expr: getFld('fldNm') getCtl('fldNm')
+// tag  sub rs="expr" dtypes=".." ctl="fld1,fld2" id= ..         (tag bleibt,subreport)
+//    childTag  typ=".." if=".."       
+// getNode() in ..data-expr benutzbar (eigene Attr..; xsl-Transf der children)
+// getPage() getRecNo()
+</script>

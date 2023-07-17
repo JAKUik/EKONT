@@ -1,0 +1,11 @@
+<html> <head> <title>HTML sestavy pro úèto 2004</title><script src="tsscript.js"></script><script>
+    if (getIEVer()<5) 
+      {
+        document.write("<h3>Sestavy vyžadují Internet Explorer (MSIE) verze 5.0 a vyšší!</h3>");
+        document.write("<i>(Aktuální prohlížeè:</b> "+window.navigator.userAgent+")</i>");
+      }
+        else
+      {
+        document.write("<frameset cols='210,*'><frame src='Menuform.htm' scrolling='auto' marginwidth='2pt'><frame src='Helpform.htm' name='form'></frameset>");
+      }
+  </script> </head> </html>

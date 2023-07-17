@@ -1,0 +1,24 @@
+<html> <head> <style> .menu {cursor: hand} .menuobr {cursor: hand; font-family: Wingdings; color: blue} .datum {font-size: 7pt; font-weight: normal; font-style: italic} td {border: 0pt; font-family: Verdana; font-size: 8pt} a {color: black; text-decoration: none} </style><script src="dataakt.js"></script><script src="prilohyb.js"></script><script> 
+        var p;
+
+        function SbalRozbal(div,obj){
+           obj.style.display=((obj.style.display=="none")? "" : "none");
+           div.innerText=((div.innerText=="ñ")? "ò" : "ñ");
+        }
+        function kotvaOvl(){
+          with (document){
+            var a=anchors;
+            var k=a.length;
+            for (var i=0; i<k; i++){
+              a[i].onmouseover=new Function("this.style.textDecoration='underline'");
+              a[i].onmouseout=new Function("this.style.textDecoration='none'");
+              a[i].onclick=new Function("if (p!=null) {p.style.color='black'; p.style.fontWeight='normal'}; this.style.color='red'; this.style.fontWeight='bold'; p=this");
+              a[i].target="form";
+            }
+          }
+        }
+       
+       function menuText(txt){
+            document.write(txt);
+        }
+    </script> </head> <body onLoad="kotvaOvl()"> <table cellspacing="2pt" cellpading="0pt"> <tr> <td style="width: 5pt">&nbsp;</td> <td style="width: 120pt; color: 'blue'; cursor: default"> <b>DPH</b> </td> </tr> <tr> <td style="width: 5pt; border: 1pt solid"> <div class="menuobr" id="StavMenuDPH12" onClick="SbalRozbal(this,PolMenuDPH12)">ò</div> </td> <td style="width: 120pt"> <div class="menu" onClick="SbalRozbal(StavMenuDPH12,PolMenuDPH12)"> <b>Vzor 12</b> <span class="datum"><script>document.write(Dph12);</script></span> </div> </td> </tr> <tr id="PolMenuDPH12" style="display: none; cursor: hand"> <td>&nbsp;</td> <td> <a id="menu" href="Dph12_1.htm">1.strana (oddíl A)</a><br> <a id="menu" href="Dph12_2.htm">2.strana (oddíl B)</a><br> <a id="menu" href="Dph12_3.htm">3.strana</a><br> <a id="menu" href="Dph12_4.htm">4.strana (oddíl C)</a><br> </td> </tr> <tr> <td style="width: 5pt; border: 1pt solid"> <div class="menuobr" id="StavMenuDPH" onClick="SbalRozbal(this,PolMenuDPH)">ò</div> </td> <td style="width: 120pt"> <div class="menu" onClick="SbalRozbal(StavMenuDPH,PolMenuDPH)"> <b>Vzor 11</b> <span class="datum"><script>document.write(Dph11);</script></span> </div> </td> </tr> <tr id="PolMenuDPH" style="display: none; cursor: hand"> <td>&nbsp;</td> <td> <a id="menu" href="Dph11_1.htm">1.strana (oddíl A)</a><br> <a id="menu" href="Dph11_2.htm">2.strana (oddíl B)</a><br> <a id="menu" href="Dph11_3.htm">3.strana (oddíl C)</a><br> <a id="menu" href="Dph11_4.htm">4.strana</a><br> </td> </tr> <tr> <td colspan="2"><hr size="2" noshade color="black"></td> </tr> <tr> <td>&nbsp;</td> <td> <a id="menu" href="Helpform.htm">Nápovìda</a><br> </td> </tr> <tr> <td>&nbsp;</td> <td> <a id="menu" href="Gameska.htm">Nìco ke kávì</a><br> </td> </tr> </table> </body> </html>
