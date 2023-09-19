@@ -1,4 +1,5 @@
-# CZECH
+## CZECH
+
 # ÚVOD
 
 Tento repozitář obsahuje ukázku mé práce z předchozí dvacetilé praxe programátora 1985-2005. 
@@ -28,7 +29,10 @@ projektech využívajících stále systém FoxPro.
 Tento repozitář a jeho obsah slouží pouze pro ukázku práce a není povoleno jej jakokoliv dále šířit. 
 
 
-# ENGLISH
+
+
+## ENGLISH
+
 # INTRODUCTION 
 This repository contains a sample of my work from my previous twenty years of programming practice from 1985-2005. It involves programming a complete double-entry accounting system for our accounting firm EKONT v.o.s. In 1993, when we started our operations, there were very few accounting programs on the market (Abra, Slušovice, later Stereo).
 
